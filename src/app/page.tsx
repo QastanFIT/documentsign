@@ -34,7 +34,7 @@ export default function Home() {
 
     <div className="pt-32 pb-20 mx-4" id="waarom">
       <div className="max-w-7xl w-full mx-auto">
-        <h3 className={`${josefin.className} text-4xl font-semibold text-center mb-16`}>Efficiënt en Juridisch Waterdicht</h3>
+        <h3 className={`${josefin.className} text-4xl font-semibold text-center mb-16`}>Efficiënt en juridisch waterdicht</h3>
 
         <div className="grid sm:grid-cols-2 gap-8">
           <div className="col-span-full bg-orange-500/80 rounded-2xl p-6 text-white flex gap-10">
@@ -130,7 +130,7 @@ export default function Home() {
         <div className="flex h-full">
         {Array(10).fill('').map((_, i)=>{
           return (
-            <div className={`${i===0?'bg-white opacity-[15%]': i===1 ? 'bg-white/10' :'bg-white/5'} h-full w-auto aspect-square  rounded-full`}></div>
+            <div className={`${i===0?'bg-white opacity-[15%]': i===1 ? 'bg-white/10' :'bg-white/5'} h-full w-auto aspect-square  rounded-full`} key={i}></div>
           )
         })}
         </div>
