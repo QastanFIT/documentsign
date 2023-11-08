@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '../ui/button'
 import { Menu, X } from 'lucide-react'
+import logo from '../../assets/images/logo.svg'
+import Image from 'next/image'
 
 const Navbar = () => {
   const [is_open, setis_open] = useState(false);
@@ -11,7 +13,7 @@ const Navbar = () => {
   return (
     <div className='wg-white border-b shadow-md p-2 z-10'>
         <div className='mx-auto max-w-7xl grid grid-cols-2 sm:grid-cols-3'>
-            <Link href=""><div className='flex items-center justify-start font-bold font-josefin text-lg'>digitalsign.</div></Link>
+            <Link href="" className='w-fit flex items-center'><div className='flex font-bold font-josefin text-lg'><Image src={logo} className='h-7 w-fit' alt="Logo digitalsign Qastan"/></div></Link>
 
             {/* Mobile nav */}
             <div className='sm:hidden'>
