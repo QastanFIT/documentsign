@@ -1,7 +1,7 @@
 'use client'
 
 import { josefin } from '@/app/layout'
-import { Check, Eraser, Loader2, Mail, MonitorSmartphone, PenTool, X } from 'lucide-react'
+import { Check, Eraser, Loader2, Mail, MonitorSmartphone, PenTool, Trash2, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Label } from '../ui/label'
@@ -195,6 +195,10 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
             if(sketchRef.current){sketchRef.current.eraseMode(eraserMode)}
         }, [eraserMode])
 
+        function clearSketch() {
+            if(sketchRef.current){sketchRef.current.clearCanvas()}
+        }
+
         return (
             <Sheet>
                 <SheetTrigger asChild>
@@ -237,6 +241,9 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                                     </button>
                                     <button className={`${eraserMode ? 'text-orange-600' : ''} w-7 h-7 rounded-sm flex justify-center items-center text-neutral-400`} onClick={()=>{seteraserMode(prev=>!prev)}}>
                                         <Eraser className='w-4'/>
+                                    </button>
+                                    <button className={`w-7 h-7 rounded-sm flex justify-center items-center text-neutral-400`} onClick={()=>{clearSketch()}}>
+                                        <Trash2 className='w-4'/>
                                     </button>
                                 </div>
                             </div>
