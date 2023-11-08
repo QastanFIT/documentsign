@@ -21,7 +21,7 @@ import SigningOptions from '@/components/document/SigningOptions'
 import SideNav from '@/components/document/SideNav'
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js',import.meta.url,).toString();
 
-const page = () => {
+const DocumentPage = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
 
@@ -83,4 +83,4 @@ const page = () => {
   )
 }
 
-export default page
+export default DocumentPage

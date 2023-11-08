@@ -161,7 +161,8 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                         firstname: firstname,
                         name: lastname,
                         function: company_function,
-                        email:data.clientemail
+                        email:data.clientemail,
+                        image: signature_base
                     })
                     if(response.errorcode===0){
                         setis_open(false)
