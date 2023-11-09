@@ -3,6 +3,7 @@ import './globals.css'
 import { Josefin_Sans } from 'next/font/google'
 
 import Providers from '@/providers/query-provider'
+import Head from 'next/head'
 
 export const josefin = Josefin_Sans({
   subsets: ['latin'],
@@ -21,6 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Head>
+        <meta name="robots" content="all" />
+        <link rel="canonical" href="https://sign.qastan.be" key="canonical"/>
+      </Head>
       <body suppressHydrationWarning={true}>
         <Providers>
           {children}

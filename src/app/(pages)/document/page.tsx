@@ -8,17 +8,18 @@ import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 
 import {obj} from '../../../base'
+import lost from '../../../assets/images/files_lost.svg'
 
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
-import { Mail, MonitorSmartphone, PenTool, X } from 'lucide-react';
-import { josefin } from '@/app/layout'
-import { Metadata } from 'next'
-import { Skeleton } from '@/components/ui/skeleton'
-import { format } from 'date-fns'
+
 import SigningOptions from '@/components/document/SigningOptions'
 import SideNav from '@/components/document/SideNav'
+import { josefin } from '@/app/layout'
+import Link from 'next/link'
+import { Dot } from 'lucide-react'
+import Image from 'next/image'
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js',import.meta.url,).toString();
 
 const DocumentPage = () => {
@@ -27,7 +28,7 @@ const DocumentPage = () => {
 
   const [numPages, setNumPages] = useState<number>(0);
 
-  const { data, refetch:refetchDocument } = useQuery<DocumentObject | null>({
+  const { data, refetch:refetchDocument, isFetching } = useQuery<DocumentObject | null>({
     queryKey: [`document_${token}`],
     queryFn: async () => {
       try {
@@ -49,9 +50,27 @@ const DocumentPage = () => {
     <div className='flex flex-col h-full'>
       <Navbar document={data}/>
       <main className='bg-slate-50 h-full flex flex-col items-center'>
+        {(!token || (!data && !isFetching)) &&
+        <div className='h-full w-full grid grid-cols-2'>
+          <div className='flex justify-center mt-16 lg:mt-32'>
+            <div className='w-5/6'>
+              <h2 className={`${josefin.className} lg:max-w-[500px] text-3xl lg:text-6xl text-neutral-400 leading-tight font-semibold`}><span className='text-neutral-800'>Sorry</span>, dit document kon niet worden gevonden</h2>
+              <p className='mt-4 text-neutral-600'>Het document waar u naar opzoek was is niet gevonden.</p>
 
-        
+              <div className='mt-12 flex items-center gap-2'>
+                <Link href="/" className='text-neutral-300 hover:text-neutral-700 hover:underline duration-200'>Terug naar hoofdpagina</Link>
+                <Dot className='text-neutral-300'/>
+                <Link href="/" className='text-neutral-300 hover:text-neutral-700 hover:underline duration-200'>Qastan bezoeken</Link>
+              </div>
+            </div>
+          </div>
+          <div>
+            <Image className='h-1/2 mt-16 lg:mt-32' src={lost} alt="not found" />
+          </div>
+        </div>
+        }
 
+        {(token && (data || isFetching)) && 
         <div className='flex h-full w-full relative'>
 
           {/* Side nav */}
@@ -77,6 +96,7 @@ const DocumentPage = () => {
           </div>
 
         </div>
+        }
 
       </main>
     </div>
