@@ -21,8 +21,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="nl">
       <Head>
+        <meta name="description" content="Onderteken je documenten waar je maar wil en wanneer je maar wil, dankzij DigitalSign van Qastan."/>
+        <meta http-equiv="content-language" content="nl"/>
         <meta name="robots" content="all" />
         <link rel="canonical" href="https://sign.qastan.be" key="canonical"/>
       </Head>
