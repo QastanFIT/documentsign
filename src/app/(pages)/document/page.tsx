@@ -20,6 +20,7 @@ import { josefin } from '@/app/layout'
 import Link from 'next/link'
 import { Dot } from 'lucide-react'
 import Image from 'next/image'
+import Head from 'next/head'
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js',import.meta.url,).toString();
 
 const DocumentPage = () => {
@@ -47,6 +48,10 @@ const DocumentPage = () => {
   };
 
   return (
+    <>
+    <Head>
+      <link rel="canonical" href="https://sign.qastan.be/document" key="canonical"/>
+    </Head>
     <div className='flex flex-col h-full'>
       <Navbar document={data}/>
       <main className='bg-slate-50 h-full flex flex-col items-center'>
@@ -100,6 +105,7 @@ const DocumentPage = () => {
 
       </main>
     </div>
+    </>
   )
 }
 

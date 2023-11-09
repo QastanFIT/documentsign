@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <Head>
-        <meta name="description" content="Onderteken je documenten waar je maar wil en wanneer je maar wil, dankzij DigitalSign van Qastan."/>
+        <meta name="description" content="Onderteken je documenten waar je maar wil en wanneer je maar wil, dankzij DigitalSign van Qastan. Snel, eenvoudig en overal!"/>
         <meta http-equiv="content-language" content="nl"/>
         <meta name="robots" content="all" />
         <link rel="canonical" href="https://sign.qastan.be" key="canonical"/>
