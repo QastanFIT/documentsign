@@ -116,7 +116,7 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                     <Button onClick={()=>{validate()}} disabled={isSuccessSigning || isPendingSigning || isComplete()} className={`bg-orange-600 gap-2 ${isErrorSigning && 'shadow-md shadow-red-300 bg-red-600 hover:bg-red-600'}`}>{
                         isPendingSigning ? <><Loader2 className='w-4 animate-spin'/>Ondertekenen...</>
                         : isErrorSigning ? <><X className='w-4'/>Er liep iets mis</>
-                        : isSuccessSigning ? <><Check className='w-4'/>Ondertekent</>
+                        : isSuccessSigning ? <><Check className='w-4'/>Ondertekend</>
                         : 'Ondertekenen'
                     }</Button>   
                     }
@@ -154,7 +154,7 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
         const { isPending:isPendingSigning, mutate:validate, isSuccess:isSuccessSigning, isError:isErrorSigning, reset:resetSigning } = useMutation({
             mutationFn: async () => {
                 try {
-                    const {data:response} = await axios.post(`api/document/validate`, {
+                    let obj = {
                         documenttoken:data.documenttoken,
                         confirmationcode: code,
                         company: company,
@@ -163,7 +163,9 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                         function: company_function,
                         email:data.clientemail,
                         image: signature_base
-                    })
+                    }
+                    console.log(obj)
+                    const {data:response} = await axios.post(`api/document/validate`, obj)
                     if(response.errorcode===0){
                         setis_open(false)
                         refetch()
@@ -277,7 +279,7 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                         <Button onClick={()=>{validate()}} disabled={isSuccessSigning || isPendingSigning || isComplete()} className={`bg-orange-600 gap-2 ${isErrorSigning && 'shadow-md shadow-red-300 bg-red-600 hover:bg-red-600'}`}>{
                             isPendingSigning ? <><Loader2 className='w-4 animate-spin'/>Ondertekenen...</>
                             : isErrorSigning ? <><X className='w-4'/>Er liep iets mis</>
-                            : isSuccessSigning ? <><Check className='w-4'/>Ondertekent</>
+                            : isSuccessSigning ? <><Check className='w-4'/>Ondertekend</>
                             : 'Ondertekenen'
                         }</Button>   
                         }
@@ -296,15 +298,15 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
 
         <button disabled={data.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
             {data.status !== 2 ? 'Ondertekenen'
-            : <><Check className='w-4' strokeWidth={2}/>Ondertekent</>
+            : <><Check className='w-4' strokeWidth={2}/>Ondertekend</>
             }
         </button>
 
         <DrawOption />
 
-        <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
+        <button disabled className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} disabled:opacity-50 disabled:cursor-not-allowed rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
             <MonitorSmartphone className='w-5'/>
-            <p className={`${josefin.className} font-medium text-sm`}>ID Viewer</p>
+            <p className={`${josefin.className} font-medium text-sm`}>Soon...</p>
         </button>
     </div>
   )

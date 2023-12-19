@@ -34,6 +34,7 @@ const DocumentPage = () => {
     queryFn: async () => {
       try {
         const {data} = await axios.get(`api/document?token=${token}`)
+        console.log(data)
         //data.document = obj.base
         return data
       } catch (error) {
