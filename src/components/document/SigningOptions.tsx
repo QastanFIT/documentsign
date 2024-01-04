@@ -110,7 +110,7 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                         isPending ? <><Loader2 className='w-4 animate-spin'/>Even geduld...</> 
                         : isError ? <><X className='w-4'/>Er liep iets mis</>
                         : isSuccess ? <><Check className='w-4'/>Mail verstuurd</>
-                        : 'Code versturen'
+                        : 'Ondertekenen'
                     }</Button>    
                     :
                     <Button onClick={()=>{validate()}} disabled={isSuccessSigning || isPendingSigning || isComplete()} className={`bg-orange-600 gap-2 ${isErrorSigning && 'shadow-md shadow-red-300 bg-red-600 hover:bg-red-600'}`}>{
@@ -273,7 +273,7 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
                             isPending ? <><Loader2 className='w-4 animate-spin'/>Even geduld...</> 
                             : isError ? <><X className='w-4'/>Er liep iets mis</>
                             : isSuccess ? <><Check className='w-4'/>Mail verstuurd</>
-                            : 'Code versturen'
+                            : 'Ondertekenen'
                         }</Button>    
                         :
                         <Button onClick={()=>{validate()}} disabled={isSuccessSigning || isPendingSigning || isComplete()} className={`bg-orange-600 gap-2 ${isErrorSigning && 'shadow-md shadow-red-300 bg-red-600 hover:bg-red-600'}`}>{
@@ -288,28 +288,34 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
         )
     }
 
-  return (
+    return (
     <div className={` ${is_open ? 'p-2 bg-white shadow-xl gap-2' : ''} fixed bottom-10  rounded-md flex items-center z-10`}>
         <button onClick={()=>{setis_open(false)}} className={`${is_open ? 'scale-100 w-6 h-6' : 'scale-0 w-0 h-0'} bg-neutral-300 text-white flex justify-center items-center rounded-full hover:bg-neutral-400 duration-200`}>
             <X className='w-4'/>
         </button>
-
+        
+        {data.mail2faenabled &&
         <EmailOption />
+        }
 
         <button disabled={data.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
             {data.status !== 2 ? 'Ondertekenen'
             : <><Check className='w-4' strokeWidth={2}/>Ondertekend</>
             }
         </button>
-
+        
+        {data.signatureenabled && 
         <DrawOption />
+        }
 
+        {data.eidenabled && 
         <button disabled className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} disabled:opacity-50 disabled:cursor-not-allowed rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
             <MonitorSmartphone className='w-5'/>
             <p className={`${josefin.className} font-medium text-sm`}>Soon...</p>
         </button>
+        }
     </div>
-  )
+    )
 }
 
 export default SigningOptions

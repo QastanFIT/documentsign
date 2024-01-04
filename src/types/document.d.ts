@@ -20,4 +20,8 @@ interface DocumentObject {
     loginid:                number;
     deleted:                boolean;
     language:               number;
+
+    mail2faenabled:         boolean;
+    signatureenabled:       boolean;
+    eidenabled:             boolean;
 }

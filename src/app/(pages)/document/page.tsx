@@ -41,7 +41,11 @@ const DocumentPage = () => {
         return null
       }
     },
-    enabled: !!token
+    enabled: !!token,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+    refetchIntervalInBackground: false
   })
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
