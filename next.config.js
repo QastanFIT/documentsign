@@ -18,7 +18,7 @@ const nextConfig = {
         
         return config;
     },
-    experimental: { webpackBuildWorker:true }
+    experimental: { webpackBuildWorker:true },
 }
 
 module.exports = nextConfig
