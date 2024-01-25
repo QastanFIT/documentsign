@@ -53,22 +53,8 @@ const DocumentPage = () => {
     setNumPages(numPages);
   };
 
-  const signMe = async () => {
-    try { 
-      const {data} = await axios.get(`api/eid/sign`)
-      console.log(data)
-    } catch (e) {
-      if(e instanceof AxiosError){
-        console.log(e.response?.status, e.response?.data)
-      }
-    }
-  }
-
   return (
     <>
-    <Head>
-      <link rel="canonical" href="https://sign.qastan.be/document" key="canonical"/>
-    </Head>
     <div className='flex flex-col h-full'>
       <Navbar document={data}/>
       <main className='bg-slate-50 h-full flex flex-col items-center'>
