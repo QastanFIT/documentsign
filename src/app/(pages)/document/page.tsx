@@ -16,7 +16,7 @@ import 'react-pdf/dist/Page/TextLayer.css'
 
 import SigningOptions from '@/components/document/SigningOptions'
 import SideNav from '@/components/document/SideNav'
-import { josefin } from '@/app/layout'
+import { josefin } from '../../../assets/fonts/josefin'
 import Link from 'next/link'
 import { Dot } from 'lucide-react'
 import Image from 'next/image'
