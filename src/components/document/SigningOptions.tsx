@@ -1,6 +1,6 @@
 'use client'
 
-import { josefin } from '@/app/layout'
+import { josefin } from '@/assets/fonts/josefin'
 import { Check, Eraser, Loader2, Mail, MonitorSmartphone, PenTool, RotateCcw, Trash2, X, XCircle } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../ui/sheet'
