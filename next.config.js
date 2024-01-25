@@ -18,7 +18,7 @@ const nextConfig = {
         
         return config;
     },
-    experimental: { appDir: true }
+    experimental: { appDir: true, webpackBuildWorker:true }
 }
 
 module.exports = nextConfig
