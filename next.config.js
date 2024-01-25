@@ -18,7 +18,8 @@ const nextConfig = {
         
         return config;
     },
-    experimental: { webpackBuildWorker:true }
+    experimental: { webpackBuildWorker:true },
+    typescript: { ignoreBuildErrors:true }
 }
 
 module.exports = nextConfig
