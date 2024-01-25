@@ -20,7 +20,6 @@ import { josefin } from '@/app/layout'
 import Link from 'next/link'
 import { Dot } from 'lucide-react'
 import Image from 'next/image'
-import Head from 'next/head'
 import { Button } from '@/components/ui/button'
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js',import.meta.url,).toString();
 
