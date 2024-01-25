@@ -9,6 +9,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import Socials from "@/components/site/Socials";
 import ContactHeader from "@/components/site/home/ContactHeader";
 import { Metadata } from "next";
+import axios from "axios";
 
 export const metadata: Metadata = {
   title: 'DigitalSign | Makkelijk Digitaal Signeren',
@@ -16,6 +17,9 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
+
+
+
   return (
     <>
     <Navbar />

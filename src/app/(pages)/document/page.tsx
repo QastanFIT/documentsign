@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 
 import {useQuery} from '@tanstack/react-query'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 import {obj} from '../../../base'
 import lost from '../../../assets/images/files_lost.svg'
@@ -21,6 +21,7 @@ import Link from 'next/link'
 import { Dot } from 'lucide-react'
 import Image from 'next/image'
 import Head from 'next/head'
+import { Button } from '@/components/ui/button'
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js',import.meta.url,).toString();
 
 const DocumentPage = () => {
@@ -52,6 +53,17 @@ const DocumentPage = () => {
     setNumPages(numPages);
   };
 
+  const signMe = async () => {
+    try { 
+      const {data} = await axios.get(`api/eid/sign`)
+      console.log(data)
+    } catch (e) {
+      if(e instanceof AxiosError){
+        console.log(e.response?.status, e.response?.data)
+      }
+    }
+  }
+
   return (
     <>
     <Head>
@@ -60,6 +72,7 @@ const DocumentPage = () => {
     <div className='flex flex-col h-full'>
       <Navbar document={data}/>
       <main className='bg-slate-50 h-full flex flex-col items-center'>
+        
         {(!token || (!data && !isFetching)) &&
         <div className='h-full w-full grid grid-cols-2'>
           <div className='flex justify-center mt-16 lg:mt-32'>
