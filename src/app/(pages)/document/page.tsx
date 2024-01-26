@@ -9,8 +9,6 @@ import axios, { AxiosError } from 'axios'
 
 import lost from '../../../assets/images/files_lost.svg'
 
-import * as webeid from "../../../lib/web-eid"
-
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
