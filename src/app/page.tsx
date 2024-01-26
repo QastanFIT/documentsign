@@ -1,5 +1,4 @@
 import Navbar from "@/components/site/Navbar";
-import { Button } from "@/components/ui/button";
 import { josefin } from "../assets/fonts/josefin";
 import bg from '../assets/images/home_bg.jpg'
 import preview from '../assets/images/preview_signed.jpg'
@@ -9,7 +8,6 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import Socials from "@/components/site/Socials";
 import ContactHeader from "@/components/site/home/ContactHeader";
 import { Metadata } from "next";
-import axios from "axios";
 
 export const metadata: Metadata = {
   title: 'DigitalSign | Makkelijk Digitaal Signeren',
@@ -17,9 +15,6 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
-
-
-
   return (
     <>
     <Navbar />

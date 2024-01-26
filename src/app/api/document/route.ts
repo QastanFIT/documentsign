@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         if(data.errorcode!==0){throw new Error()}
         return new Response(JSON.stringify(data.content.document))
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         return new Response('Something went wrong', {status:500})
     }
 }

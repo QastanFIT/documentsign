@@ -7,10 +7,10 @@ import React, { useState } from 'react'
 import {useQuery} from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 
-import {obj} from '../../../base'
 import lost from '../../../assets/images/files_lost.svg'
 
-import { Document, Page, pdfjs } from 'react-pdf'
+import * as webeid from "../../../lib/web-eid"
+
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
@@ -20,8 +20,10 @@ import { josefin } from '../../../assets/fonts/josefin'
 import Link from 'next/link'
 import { Dot } from 'lucide-react'
 import Image from 'next/image'
+import { Document, Page, pdfjs } from 'react-pdf'
 import { Button } from '@/components/ui/button'
-pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js',import.meta.url,).toString();
+// import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
 const DocumentPage = () => {
   const searchParams = useSearchParams()
@@ -51,6 +53,7 @@ const DocumentPage = () => {
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
+
 
   return (
     <>
