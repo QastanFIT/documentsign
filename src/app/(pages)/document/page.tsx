@@ -92,7 +92,7 @@ const DocumentPage = () => {
             {data && <SigningOptions refetch={()=>{refetchDocument()}} data={data}/>}
 
             {/* Document preview */}
-            <div className='mt-10 px-10 w-fit mx-4'>
+            <div className='max-w-[100dvw] overflow-auto mt-10 sm:px-10 w-fit mx-4'>
             {data && 
             <Document file={`data:application/pdf;base64,${data.document}`} className='max-h-full' onLoadSuccess={onDocumentLoadSuccess}>
               {Array.from(new Array(numPages), (_, index) => (

@@ -88,7 +88,7 @@ const EmailOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
                 <p className={`${josefin.className} font-medium text-sm`}>Email</p>
             </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="flex flex-col items-center justify-center">
+            <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
                         <Label>E-mailadres <span className='text-orange-600'>*</span></Label>
@@ -221,7 +221,7 @@ const DrawOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
                     <p className={`${josefin.className} font-medium text-sm`}>Tekenen</p>
                 </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="flex flex-col items-center justify-center">
+            <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
                         <Label>E-mailadres <span className='text-orange-600'>*</span></Label>
@@ -499,7 +499,7 @@ const EidOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
                     <p className={`${josefin.className} font-medium text-sm`}>e-ID</p>
                 </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="flex flex-col items-center justify-center">
+            <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
                 <Toaster />
 
                 {show_help && <>
