@@ -143,7 +143,7 @@ const DocumentPage = () => {
           <div className='flex justify-center w-full max-h-[calc(100vh-45px)] overflow-auto'>
 
             {/* Menu signing */}
-            {data && <SigningOptions refetch={()=>{refetchDocument()}} data={data} password={value}/>}
+            {data && <SigningOptions refetch={()=>{refetchDocument()}} data={data} password={value} token={token}/>}
 
             {/* Document preview */}
             <div className='max-w-[100dvw] overflow-auto mt-10 sm:px-10 w-fit mx-4'>
