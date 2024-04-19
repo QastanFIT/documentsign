@@ -24,9 +24,10 @@ type OptionProps = {
     data: DocumentObject
     setis_open: any;
     refetch: any
+    password?: string
 }
 
-const EmailOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
+const EmailOption = ({is_open, data, setis_open, refetch, password}:OptionProps) => {
     const [firstname, setfirstname] = useState('');
     const [lastname, setlastname] = useState('');
     const [company, setcompany] = useState('');
@@ -38,7 +39,7 @@ const EmailOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
         mutationFn: async () => {
             try {
                 setis_success(false)
-                const {data:response} = await axios.post(`api/document/confirmationcode`, {documenttoken:data.documenttoken})
+                const {data:response} = await axios.post(`api/document/confirmationcode`, {documenttoken:data.documenttoken, documentpassword:password})
                 return response
             } catch (error) {
                 throw new Error('')
@@ -137,7 +138,7 @@ const EmailOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
     )
 }
 
-const DrawOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
+const DrawOption = ({is_open, data, setis_open, refetch, password}:OptionProps) => {
     const sketchRef = useRef<ReactSketchCanvasRef | null>(null)
     const [eraserMode, seteraserMode] = useState(false);
 
@@ -153,7 +154,7 @@ const DrawOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
         mutationFn: async () => {
             try {
                 setis_success(false)
-                const {data:response} = await axios.post(`api/document/confirmationcode`, {documenttoken:data.documenttoken})
+                const {data:response} = await axios.post(`api/document/confirmationcode`, {documenttoken:data.documenttoken, documentpassword:password})
                 return response
             } catch (error) {
                 throw new Error('')
@@ -307,7 +308,7 @@ type CardInformation = {
     nationality: string;
 }
 
-const EidOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
+const EidOption = ({is_open, data, setis_open, refetch, password}:OptionProps) => {
     const [visible, setvisible] = useState(false);
     const [is_card_inserted, setis_card_inserted] = useState(false);
     const [card_information, setcard_information] = useState<CardInformation | null>(null);
@@ -340,6 +341,7 @@ const EidOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
         mutationFn: async () => {
             const { data:result } = await axios.post(`api/document/validate`, {
                 documenttoken: data.documenttoken,
+                documentpassword: password,
                 eid: true,
                 email: data.clientemail,
                 name: card_info?.name
@@ -605,7 +607,7 @@ const EidOption = ({is_open, data, setis_open, refetch}:OptionProps) => {
     )
 }
 
-const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void}) => {
+const SigningOptions = ({data, password, refetch}:{data:DocumentObject, password:string, refetch:()=>void}) => {
     const [is_open, setis_open] = useState(false);
 
     
@@ -617,7 +619,7 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
         </button>
         
         {data.mail2faenabled &&
-        <EmailOption is_open={is_open} data={data} setis_open={setis_open} refetch={refetch}/>
+        <EmailOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch}/>
         }
 
         <button disabled={data.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
@@ -627,11 +629,11 @@ const SigningOptions = ({data, refetch}:{data:DocumentObject, refetch:()=>void})
         </button>
         
         {data.signatureenabled && 
-        <DrawOption is_open={is_open} data={data} setis_open={setis_open} refetch={refetch}/>
+        <DrawOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch}/>
         }
 
         {data.eidenabled && 
-        <EidOption is_open={is_open} data={data} setis_open={setis_open} refetch={refetch}/>
+        <EidOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch}/>
         }
     </div>
     )

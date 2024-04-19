@@ -2,9 +2,9 @@
 
 import Navbar from '@/components/document/Navbar'
 import { useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery} from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 
 import lost from '../../../assets/images/files_lost.svg'
@@ -12,14 +12,17 @@ import lost from '../../../assets/images/files_lost.svg'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
+import autoAnimate from '@formkit/auto-animate'
+
 import SigningOptions from '@/components/document/SigningOptions'
 import SideNav from '@/components/document/SideNav'
 import { josefin } from '../../../assets/fonts/josefin'
 import Link from 'next/link'
-import { Dot } from 'lucide-react'
+import { Dot, Loader2, Lock, LockOpen } from 'lucide-react'
 import Image from 'next/image'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { Button } from '@/components/ui/button'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 // import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
@@ -27,13 +30,34 @@ const DocumentPage = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
 
+  const codeContainer = useRef<HTMLDivElement | null>(null)
+
   const [numPages, setNumPages] = useState<number>(0);
+
+  const [value, setValue] = React.useState("")
+
+  const { data:validPassword, mutate:validatePassword, isPending:isPendingValidatePassword, isError, reset } = useMutation({
+    mutationKey: [`validate_password_${token}`],
+    mutationFn: async () => {
+      const {data} = await axios.post(`api/document/validatepassword`, {
+        documenttoken: token,
+        documentpassword: value
+      })
+      console.log(data);
+      if(data.errorcode!==0){ throw new Error(data.message) }
+      refetchDocument()
+      return true
+    },
+    onError: () => {
+      setTimeout(()=>{setValue(""); reset()}, 2000)
+    }
+  })
 
   const { data, refetch:refetchDocument, isFetching } = useQuery<DocumentObject | null>({
     queryKey: [`document_${token}`],
     queryFn: async () => {
       try {
-        const {data} = await axios.get(`api/document?token=${token}`)
+        const {data} = await axios.get(`api/document?token=${token}&documentpassword=${value}`)
         console.log(data)
         //data.document = obj.base
         return data
@@ -41,7 +65,7 @@ const DocumentPage = () => {
         return null
       }
     },
-    enabled: !!token,
+    enabled: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchInterval: false,
@@ -52,11 +76,41 @@ const DocumentPage = () => {
     setNumPages(numPages);
   };
 
+  useEffect(() => {
+    codeContainer.current && autoAnimate(codeContainer.current)
+  }, [codeContainer])
 
   return (
     <>
     <div className='flex flex-col h-full'>
       <Navbar document={data}/>
+
+      {!validPassword 
+      ?
+      <main className='bg-white h-full flex flex-col justify-center items-center bg-gradient-to-bl from-[#91c8ed2d] via-[#fa9eed2d] to-[#ff7b003d]'>
+
+        <div ref={codeContainer} className='bg-white rounded-xl border shadow-lg p-10 flex flex-col justify-center items-center'>
+          <div className='w-12 min-h-[48px] h-12 bg-primary flex justify-center items-center text-white mb-10 rounded-lg'>{value.length < 6 ? <Lock className='w-6 h-6'/> : <LockOpen className="w-6 h-6"/>}</div>
+          <p className='text-3xl font-bold'>Voer uw code in</p>
+          <p className='text-neutral-600 mt-1 text-center'>We hebben u een mail gestuurd met uw code</p>
+
+          <div className='mt-10'>
+          <InputOTP maxLength={6} disabled={isError || isPendingValidatePassword} value={value} onChange={(value) => setValue(value)}>
+            <InputOTPGroup className='gap-1 sm:gap-4'>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+          </div>
+
+          {value.length === 6 && <Button disabled={isPendingValidatePassword || isError} onClick={()=>{ validatePassword() }} variant={!isError ? 'default' : 'destructive'} className={`${!isPendingValidatePassword ? 'px-10 max-w-[160px]' : 'h-10 p-0 max-w-[40px]'} w-full duration-200 whitespace-nowrap mt-10`}>{!isPendingValidatePassword ? (!isError ? 'Ga verder' : 'Foutieve code') : <Loader2 className='w-4 h-4 animate-spin'/>}</Button>}
+        </div>
+      </main>
+      :
       <main className='bg-slate-50 h-full flex flex-col items-center'>
         
         {(!token || (!data && !isFetching)) &&
@@ -89,7 +143,7 @@ const DocumentPage = () => {
           <div className='flex justify-center w-full max-h-[calc(100vh-45px)] overflow-auto'>
 
             {/* Menu signing */}
-            {data && <SigningOptions refetch={()=>{refetchDocument()}} data={data}/>}
+            {data && <SigningOptions refetch={()=>{refetchDocument()}} data={data} password={value}/>}
 
             {/* Document preview */}
             <div className='max-w-[100dvw] overflow-auto mt-10 sm:px-10 w-fit mx-4'>
@@ -108,6 +162,7 @@ const DocumentPage = () => {
         }
 
       </main>
+      }
     </div>
     </>
   )

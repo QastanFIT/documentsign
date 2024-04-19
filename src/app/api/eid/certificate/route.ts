@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import tls from "tls"
 import net from "net"
 
@@ -22,4 +22,10 @@ ${body.certificate}
         console.log(error)
         return new Response('Something went wrong', {status:500})
     }
+}
+
+export const OPTIONS = async (request: NextRequest) => {
+    return new NextResponse('', {
+      status: 200
+    })
 }
