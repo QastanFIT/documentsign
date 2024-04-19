@@ -24,4 +24,10 @@ interface DocumentObject {
     mail2faenabled:         boolean;
     signatureenabled:       boolean;
     eidenabled:             boolean;
+
+    oCurrentRecipient: CurrentRecipient
+}
+
+interface CurrentRecipient {
+    clientemail: string
 }

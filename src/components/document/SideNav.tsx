@@ -19,7 +19,7 @@ const SideNav = ({data}:{data?:DocumentObject | null}) => {
 
         <div className='bg-slate-100 py-0 px-0 rounded-none hover:rounded-md hover:py-1 hover:px-2 hover:bg-slate-200 duration-200'>
             <p className='text-slate-600 text-sm font-medium'>Ontvanger</p>
-            {data ? <p>{data?.clientemail}</p> : <Skeleton size='2xl' className='w-[150px] bg-slate-200 rounded-sm'/> }
+            {data ? <p>{data?.oCurrentRecipient.clientemail}</p> : <Skeleton size='2xl' className='w-[150px] bg-slate-200 rounded-sm'/> }
         </div>
 
         <div className='bg-slate-100 py-0 px-0 rounded-none hover:rounded-md hover:py-1 hover:px-2 hover:bg-slate-200 duration-200'>

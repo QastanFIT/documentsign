@@ -60,7 +60,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
                     firstname: firstname,
                     name: lastname,
                     function: company_function,
-                    email:data.clientemail
+                    email: data.oCurrentRecipient.clientemail
                 })
                 if(response.errorcode===0){
                     setis_open(false)
@@ -77,7 +77,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
     function isComplete() {
         let disable = true;
 
-        if(data.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2){ disable = false }
+        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2){ disable = false }
 
         return disable
     }
@@ -94,7 +94,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
                         <Label>E-mailadres <span className='text-orange-600'>*</span></Label>
-                        <Input disabled value={data.clientemail} type='email'/>
+                        <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
                     </div>
                     <div>
                         <Label htmlFor='voornaam'>Voornaam</Label>
@@ -175,10 +175,9 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
                     firstname: firstname,
                     name: lastname,
                     function: company_function,
-                    email:data.clientemail,
+                    email:data.oCurrentRecipient.clientemail,
                     image: signature_base
                 }
-                console.log(obj)
                 const {data:response} = await axios.post(`api/document/validate`, obj)
                 if(response.errorcode===0){
                     setis_open(false)
@@ -194,7 +193,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
 
     function isComplete() {
         let disable = true;
-        if(data.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2&&signature_base.length>4000){ disable = false }
+        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2&&signature_base.length>4000){ disable = false }
         return disable
     }
 
@@ -227,7 +226,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
                         <Label>E-mailadres <span className='text-orange-600'>*</span></Label>
-                        <Input disabled value={data.clientemail} type='email'/>
+                        <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
                     </div>
 
                     <div>
@@ -344,7 +343,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
                 documenttoken: data.documenttoken,
                 documentpassword: password,
                 eid: true,
-                email: data.clientemail,
+                email: data.oCurrentRecipient.clientemail,
                 name: card_info?.name
             }) 
             if(result.errorcode!==0){ throw new Error(result.message) }
@@ -563,7 +562,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
                         <Label>E-mailadres</Label>
-                        <Input disabled value={data.clientemail} type='email'/>
+                        <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
                     </div>
                     <div className='col-span-full'>
                         <Label>Rijksregisternummer</Label>
