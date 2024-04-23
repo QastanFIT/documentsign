@@ -1,7 +1,7 @@
 import Navbar from "@/components/site/Navbar";
-import { josefin } from "../assets/fonts/josefin";
-import bg from '../assets/images/home_bg.jpg'
-import preview from '../assets/images/preview_signed.jpg'
+import { josefin } from "@/assets/fonts/josefin";
+import bg from '@/assets/images/home_bg.jpg'
+import preview from '@/assets/images/preview_signed.jpg'
 import Image from "next/image";
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
+
   return (
     <>
     <Navbar />

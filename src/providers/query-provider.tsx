@@ -4,12 +4,12 @@ import React from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-function Providers({ children }: React.PropsWithChildren) {
+function Providers({ children, locale='nl' }: React.PropsWithChildren & {locale:string}) {
   const [client] = React.useState(new QueryClient());
 
   return (
     <QueryClientProvider client={client}>
-      {children}
+        {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

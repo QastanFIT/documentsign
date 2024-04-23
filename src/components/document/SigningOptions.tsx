@@ -18,6 +18,7 @@ import { first, isEqual } from "lodash"
 import { isAfter, isBefore } from 'date-fns'
 import open_app from '@/assets/images/help_open_app.svg'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 type OptionProps = {
     is_open: boolean
@@ -29,6 +30,8 @@ type OptionProps = {
 }
 
 const EmailOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
+    const t = useTranslations()
+
     const [firstname, setfirstname] = useState('');
     const [lastname, setlastname] = useState('');
     const [company, setcompany] = useState('');
@@ -87,51 +90,51 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
             <SheetTrigger asChild>
             <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
                 <Mail className='w-5'/>
-                <p className={`${josefin.className} font-medium text-sm`}>Email</p>
+                <p className={`${josefin.className} font-medium text-sm`}>{t('Email')}</p>
             </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
-                        <Label>E-mailadres <span className='text-orange-600'>*</span></Label>
+                        <Label>{t('E-mailadres')} <span className='text-orange-600'>*</span></Label>
                         <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
                     </div>
                     <div>
-                        <Label htmlFor='voornaam'>Voornaam</Label>
+                        <Label htmlFor='voornaam'>{t('Voornaam')}</Label>
                         <Input id='voornaam' value={firstname} onChange={({currentTarget})=>{setfirstname(currentTarget.value)}}/>
                     </div>
                     <div>
-                        <Label htmlFor='familienaam'>Familienaam <span className='text-orange-600'>*</span></Label>
+                        <Label htmlFor='familienaam'>{t('Familienaam')} <span className='text-orange-600'>*</span></Label>
                         <Input id='familienaam' value={lastname} onChange={({currentTarget})=>{setlastname(currentTarget.value)}}/>
                     </div>
                     <div>
-                        <Label htmlFor='bedrijf'>Bedrijf <span className='text-orange-600'>*</span></Label>
+                        <Label htmlFor='bedrijf'>{t('Bedrijf')} <span className='text-orange-600'>*</span></Label>
                         <Input id='bedrijf' value={company} onChange={({currentTarget})=>{setcompany(currentTarget.value)}}/>
                     </div>
                     <div>
-                        <Label htmlFor='functie'>Functie</Label>
+                        <Label htmlFor='functie'>{t('Functie')}</Label>
                         <Input id='functie' value={company_function} onChange={({currentTarget})=>{setcompany_function(currentTarget.value)}}/>
                     </div>
                     {isSuccess && 
                     <div>
-                        <Label>Code <span className='text-orange-600'>*</span></Label>
+                        <Label>{t('Code')} <span className='text-orange-600'>*</span></Label>
                         <Input value={code} onChange={({currentTarget})=>{setcode(currentTarget.value)}}/>
                     </div>
                     }
                 </div>
                 {!is_success ? 
                 <Button onClick={()=>{if(!isSuccess){sendConfirmationCode()}}} disabled={isPending || isError} className={`gap-2`}>{
-                    isPending ? <><Loader2 className='w-4 animate-spin'/>Even geduld...</> 
-                    : isError ? <><X className='w-4'/>Er liep iets mis</>
-                    : isSuccess ? <><Check className='w-4'/>Mail verstuurd</>
-                    : 'Ondertekenen'
+                    isPending ? <><Loader2 className='w-4 animate-spin'/>{t('Even geduld')}...</> 
+                    : isError ? <><X className='w-4'/>{t('Er liep iets mis')}</>
+                    : isSuccess ? <><Check className='w-4'/>{t('Mail verstuurd')}</>
+                    : t('Ondertekenen')
                 }</Button>    
                 :
                 <Button onClick={()=>{validate()}} disabled={isSuccessSigning || isPendingSigning || isComplete()} className={`bg-orange-600 gap-2 ${isErrorSigning && 'shadow-md shadow-red-300 bg-red-600 hover:bg-red-600'}`}>{
-                    isPendingSigning ? <><Loader2 className='w-4 animate-spin'/>Ondertekenen...</>
-                    : isErrorSigning ? <><X className='w-4'/>Er liep iets mis</>
-                    : isSuccessSigning ? <><Check className='w-4'/>Ondertekend</>
-                    : 'Ondertekenen'
+                    isPendingSigning ? <><Loader2 className='w-4 animate-spin'/>{t('Ondertekenen')}...</>
+                    : isErrorSigning ? <><X className='w-4'/>{t('Er liep iets mis')}</>
+                    : isSuccessSigning ? <><Check className='w-4'/>{t('Ondertekend')}</>
+                    : t('Ondertekenen')
                 }</Button>   
                 }
             </SheetContent>
@@ -140,6 +143,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
 }
 
 const DrawOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
+    const t = useTranslations()
     const sketchRef = useRef<ReactSketchCanvasRef | null>(null)
     const [eraserMode, seteraserMode] = useState(false);
 
@@ -219,36 +223,36 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
             <SheetTrigger asChild>
                 <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
                     <PenTool className='w-5'/>
-                    <p className={`${josefin.className} font-medium text-sm`}>Tekenen</p>
+                    <p className={`${josefin.className} font-medium text-sm`}>{t('Tekenen')}</p>
                 </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
-                        <Label>E-mailadres <span className='text-orange-600'>*</span></Label>
+                        <Label>{t('E-mailadres')} <span className='text-orange-600'>*</span></Label>
                         <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
                     </div>
 
                     <div>
-                        <Label htmlFor='voornaam'>Voornaam</Label>
+                        <Label htmlFor='voornaam'>{t('Voornaam')}</Label>
                         <Input id='voornaam' value={firstname} onChange={({currentTarget})=>{setfirstname(currentTarget.value)}}/>
                     </div>
                     <div>
-                        <Label htmlFor='familienaam'>Familienaam <span className='text-orange-600'>*</span></Label>
+                        <Label htmlFor='familienaam'>{t('Familienaam')} <span className='text-orange-600'>*</span></Label>
                         <Input id='familienaam' value={lastname} onChange={({currentTarget})=>{setlastname(currentTarget.value)}}/>
                     </div>
                     <div>
-                        <Label htmlFor='bedrijf'>Bedrijf <span className='text-orange-600'>*</span></Label>
+                        <Label htmlFor='bedrijf'>{t('Bedrijf')} <span className='text-orange-600'>*</span></Label>
                         <Input id='bedrijf' value={company} onChange={({currentTarget})=>{setcompany(currentTarget.value)}}/>
                     </div>
                     <div>
-                        <Label htmlFor='functie'>Functie</Label>
+                        <Label htmlFor='functie'>{t('Functie')}</Label>
                         <Input id='functie' value={company_function} onChange={({currentTarget})=>{setcompany_function(currentTarget.value)}}/>
                     </div>
 
                     <div className='col-span-full'>
                         <div className='flex justify-between items-end'>
-                            <Label>Handtekening <span className='text-orange-600'>*</span></Label>
+                            <Label>{t('Handtekening')} <span className='text-orange-600'>*</span></Label>
 
                             <div className='flex items-end'>
                                 <button className={`${!eraserMode ? 'text-orange-600' : ''} w-7 h-7 rounded-sm flex justify-center items-center text-neutral-400`} onClick={()=>{seteraserMode(false)}}>
@@ -276,24 +280,24 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
 
                     {isSuccess && 
                     <div>
-                        <Label>Code <span className='text-orange-600'>*</span></Label>
+                        <Label>{t('Code')} <span className='text-orange-600'>*</span></Label>
                         <Input value={code} onChange={({currentTarget})=>{setcode(currentTarget.value)}}/>
                     </div>
                     }
                 </div>
                 {!is_success ? 
                     <Button onClick={()=>{if(!isSuccess){sendConfirmationCode()}}} disabled={isPending || isError} className={`gap-2`}>{
-                        isPending ? <><Loader2 className='w-4 animate-spin'/>Even geduld...</> 
-                        : isError ? <><X className='w-4'/>Er liep iets mis</>
-                        : isSuccess ? <><Check className='w-4'/>Mail verstuurd</>
-                        : 'Ondertekenen'
+                        isPending ? <><Loader2 className='w-4 animate-spin'/>{t('Even geduld')}...</> 
+                        : isError ? <><X className='w-4'/>{t('Er liep iets mis')}</>
+                        : isSuccess ? <><Check className='w-4'/>{t('Mail verstuurd')}</>
+                        : t('Ondertekenen')
                     }</Button>    
                     :
                     <Button onClick={()=>{validate()}} disabled={isSuccessSigning || isPendingSigning || isComplete()} className={`bg-orange-600 gap-2 ${isErrorSigning && 'shadow-md shadow-red-300 bg-red-600 hover:bg-red-600'}`}>{
-                        isPendingSigning ? <><Loader2 className='w-4 animate-spin'/>Ondertekenen...</>
-                        : isErrorSigning ? <><X className='w-4'/>Er liep iets mis</>
-                        : isSuccessSigning ? <><Check className='w-4'/>Ondertekend</>
-                        : 'Ondertekenen'
+                        isPendingSigning ? <><Loader2 className='w-4 animate-spin'/>{t('Ondertekenen.')}..</>
+                        : isErrorSigning ? <><X className='w-4'/>{t('Er liep iets mis')}</>
+                        : isSuccessSigning ? <><Check className='w-4'/>{t('Ondertekend')}</>
+                        : t('Ondertekenen')
                     }</Button>   
                     }
             </SheetContent>
@@ -309,6 +313,7 @@ type CardInformation = {
 }
 
 const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
+    const t = useTranslations()
     const [visible, setvisible] = useState(false);
     const [is_card_inserted, setis_card_inserted] = useState(false);
     const [card_information, setcard_information] = useState<CardInformation | null>(null);
@@ -498,43 +503,43 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
             <SheetTrigger asChild>
                 <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} disabled:opacity-50 disabled:cursor-not-allowed rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
                     <MonitorSmartphone className='w-5'/>
-                    <p className={`${josefin.className} font-medium text-sm`}>e-ID</p>
+                    <p className={`${josefin.className} font-medium text-sm`}>{t('e-ID')}</p>
                 </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
                 <Toaster />
 
                 {show_help && <>
-                <p className='text-xl font-bold text-neutral-700'>Hulp uitleg</p>
+                <p className='text-xl font-bold text-neutral-700'>{t('Hulp uitleg')}</p>
                     
                     {help_step === 1 && <>
                         <div className="w-[175px] h-[175px] bg-slate-100 flex justify-center rounded-full">
                             <div ref={animRef} className='w-[150px] h-[200px]'></div>
                         </div>
-                        <p className="font-medium max-w-xs text-center">Gelieve uw kaartlezer aan te sluiten en uw identiteitskaart in te steken</p>
+                        <p className="font-medium max-w-xs text-center">{t('Gelieve uw kaartlezer aan te sluiten en uw identiteitskaart in te steken')}</p>
                     </>}
 
                     {help_step === 2 && <>
                         <div className="flex justify-center rounded-full">
                             <Image src={open_app} width={200} height={100} alt="open app" className='rounded-md'/>
                         </div>
-                        <p className="font-medium max-w-xs text-center">Open de applicatie <span className='underline'>eID Viewer</span> op uw computer</p>
+                        <p className="font-medium max-w-xs text-center">{t('Open de applicatie')} <span className='underline'>{t('eID Viewer')}</span> {t('op uw computer')}</p>
                     </>}
 
                     {help_step === 3 && <>
                         <div className=" flex justify-center rounded-full">
                             <div ref={dndRef} className='w-[500px] h-[300px]'></div>
                         </div>
-                        <p className="font-medium max-w-xs text-center">Sleep uw foto naar het getoonde vak</p>
+                        <p className="font-medium max-w-xs text-center">{t('Sleep uw foto naar het getoonde vak')}</p>
                     </>}
                         
                 
                 <div className='flex items-start gap-2'>
-                    {help_step === 1 && <Button onClick={()=>{setshow_help(false)}} variant='secondary'>Sluiten</Button>}
-                    {help_step > 1 && <Button onClick={()=>{sethelp_step(p=>p-1)}} variant='secondary'>Terug</Button>}
+                    {help_step === 1 && <Button onClick={()=>{setshow_help(false)}} variant='secondary'>{t('Sluiten')}</Button>}
+                    {help_step > 1 && <Button onClick={()=>{sethelp_step(p=>p-1)}} variant='secondary'>{t('Terug')}</Button>}
                     
-                    {help_step < 3 && <Button onClick={()=>{sethelp_step(p=>p+1)}} className='bg-orange-600 hover:bg-orange-700'>Volgende</Button>}
-                    {help_step === 3 && <Button onClick={()=>{setshow_help(false); sethelp_step(1)}} className='bg-orange-600 hover:bg-orange-700'>Begrepen!</Button>}
+                    {help_step < 3 && <Button onClick={()=>{sethelp_step(p=>p+1)}} className='bg-orange-600 hover:bg-orange-700'>{t('Volgende')}</Button>}
+                    {help_step === 3 && <Button onClick={()=>{setshow_help(false); sethelp_step(1)}} className='bg-orange-600 hover:bg-orange-700'>{t('Begrepen!')}</Button>}
                 </div>
 
                 <div className='flex items-start gap-1'>
@@ -546,46 +551,46 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
 
                 {!show_help && <>
                 {!card_info && <>
-                <p className="text-lg font-medium max-w-xs text-center">Upload identiteitskaart</p>
+                <p className="text-lg font-medium max-w-xs text-center">{t('Upload identiteitskaart')}</p>
                 <div className='flex flex-col gap-1'>
                     <div ref={parentRef} onDragOver={handleDragOver} onDrop={handleDrop} onDragLeave={handleDragLeave} onDragExit={handleDragLeave} className={`${is_over?'bg-orange-100 border-orange-600':'bg-neutral-100 border-neutral-200'} w-[500px] h-[200px] rounded-md border-2 border-dashed duration-300 relative flex flex-col justify-center items-center`}>
                         {is_parsing ? <Loader2 className='w-10 h-10 animate-spin text-neutral-700'/> :<UploadCloud className={`${is_over?'text-orange-600':'text-neutral-700'} h-10 w-10`} strokeWidth={1.5}/>}
-                        <p className='font-medium'>Sleep en plaats uw foto hier</p>
-                        <div ref={tooltipRef} className={`${!is_over?'invisible':''} absolute rounded-full bg-orange-600 py-1 px-3 w-fit text-sm text-white font-medium shadow-sm select-none z-50`}>identiteitskaart</div>
+                        <p className='font-medium'>{t('Sleep en plaats uw foto hier')}</p>
+                        <div ref={tooltipRef} className={`${!is_over?'invisible':''} absolute rounded-full bg-orange-600 py-1 px-3 w-fit text-sm text-white font-medium shadow-sm select-none z-50`}>{t('identiteitskaart')}</div>
                     </div>
-                    <p className='text-sm text-neutral-400'>Sleep uw foto van eID viewer naar het veld hierboven.</p>
-                    <button onClick={()=>{setshow_help(true)}} className='w-fit text-neutral-500 font-medium flex justify-center items-center text-sm gap-1 hover:underline'><HelpCircle className='w-4 h-4'/>Hulp nodig?</button>
+                    <p className='text-sm text-neutral-400'>{t('Sleep uw foto van eID viewer naar het veld hierboven')}.</p>
+                    <button onClick={()=>{setshow_help(true)}} className='w-fit text-neutral-500 font-medium flex justify-center items-center text-sm gap-1 hover:underline'><HelpCircle className='w-4 h-4'/>{t('Hulp nodig?')}</button>
                 </div>
                 </>}
 
                 {card_info && <>
                 <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
                     <div className='col-span-full'>
-                        <Label>E-mailadres</Label>
+                        <Label>{t('E-mailadres')}</Label>
                         <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
                     </div>
                     <div className='col-span-full'>
-                        <Label>Rijksregisternummer</Label>
+                        <Label>{t('Rijksregisternummer')}</Label>
                         <Input disabled value={card_info.nationalNumber} type='text'/>
                     </div>
                     <div className='col-span-full'>
-                        <Label>Kaartnummer</Label>
+                        <Label>{t('Kaartnummer')}</Label>
                         <Input disabled value={card_info.cardNumber} type='text'/>
                     </div>
                     <div className='col-span-full'>
-                        <Label>Naam</Label>
+                        <Label>{t('Naam')}</Label>
                         <Input disabled value={card_info.name} type='text'/>
                     </div>
                     <div className='col-span-full'>
-                        <Label>Nationaliteit</Label>
+                        <Label>{t('Nationaliteit')}</Label>
                         <Input disabled value={card_info.nationality} type='text'/>
                     </div>
                 </div>
                 <Button disabled={isPending || isError || isSuccess} onClick={()=>{signDocument()}} className={`${(!isError && !isSuccess) && 'bg-orange-600'} gap-2 ${isError && 'bg-red-600'} ${isSuccess && 'bg-green-600'}`}>
-                    {isPending && <><Loader2 className='w-4 h-4 animate-spin'/> Ondertekenen...</>}
-                    {isError && <><XCircle className='w-4 h-4'/> Er liep iets mis</>}
-                    {isSuccess && <><Check className='w-4 h-4'/> Ondertekend</>}
-                    {!isSuccess && !isPending && !isError && <>Ondertekenen</>}
+                    {isPending && <><Loader2 className='w-4 h-4 animate-spin'/> {t('Ondertekenen')}...</>}
+                    {isError && <><XCircle className='w-4 h-4'/> {t('Er liep iets mis')}</>}
+                    {isSuccess && <><Check className='w-4 h-4'/> {t('Ondertekend')}</>}
+                    {!isSuccess && !isPending && !isError && <>{t('Ondertekenen')}</>}
                 </Button>
                 </>}
                 </>}
@@ -609,6 +614,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
 
 const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, password:string, token:string, refetch:()=>void}) => {
     const [is_open, setis_open] = useState(false);
+    const t = useTranslations()
 
     return (
     <div className={`${(!data.mail2faenabled && !data.signatureenabled && !data.eidenabled) && 'hidden'} ${is_open ? 'p-2 bg-white shadow-xl gap-2' : ''} fixed bottom-10  rounded-md flex items-center z-10`}>
@@ -621,8 +627,8 @@ const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, p
         }
 
         <button disabled={data.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
-            {data.status !== 2 ? 'Ondertekenen'
-            : <><Check className='w-4' strokeWidth={2}/>Ondertekend</>
+            {data.status !== 2 ? t('Ondertekenen')
+            : <><Check className='w-4' strokeWidth={2}/>{t('Ondertekend')}</>
             }
         </button>
         
