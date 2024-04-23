@@ -106,16 +106,13 @@ const DocumentPage = () => {
     const code = getCookie(`code_${token}`)
     if(code){
       setValue(code);
-      
     }
   }, [])
 
   function switchLocale(locale: string) {
-    const newPath = `${pathname.replace(/^\/[a-z]{2}\b/, `/${locale}`)}?token=${token}`
     //@ts-ignore
     router.push(`${pathname.replace(/^\/[a-z]{2}\b/, `/${locale}`)}?token=${token}`, { locale: locale });
     setCookie(`code_${token}`, value, 1)
-    //window.history.replaceState(null, '', newPath)
   }
 
   const { data, refetch:refetchDocument, isFetching } = useQuery<DocumentObject | null>({
