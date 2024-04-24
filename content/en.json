@@ -105,5 +105,11 @@
     "focussen": "focus",
     "op wat er echt toe doet": "on what really matters.",
     "Neem contact op!": "Contact us!",
-    "Aarzel zeker niet om contact op te nemen met ons door middel van deze mogelijkheden": "Do not hesitate to contact us using these options"
+    "Aarzel zeker niet om contact op te nemen met ons door middel van deze mogelijkheden": "Do not hesitate to contact us using these options",
+    "Verzender": "Sender",
+    "Ontvanger": "Recipient", 
+    "Titel": "Title",
+    "Omschrijving": "Description",
+    "Aangemaakt op": "Made on",
+    "Geldig tot": "Valid until"
 }

@@ -184,7 +184,7 @@ const DocumentPage = () => {
           <div className='flex justify-center mt-16 lg:mt-32'>
             <div className='w-5/6'>
               <h2 className={`${josefin.className} lg:max-w-[500px] text-3xl lg:text-6xl text-neutral-400 leading-tight font-semibold`}><span className='text-neutral-800'>{t('Sorry')}</span>, {t('dit document kon niet worden gevonden')}</h2>
-              <p className='mt-4 text-neutral-600'>Het document waar u naar opzoek was is niet gevonden.</p>
+              <p className='mt-4 text-neutral-600'>{t('Het document waar u naar opzoek was is niet gevonden')}</p>
 
               <div className='mt-12 flex items-center gap-2'>
                 <Link href="/" className='text-neutral-300 hover:text-neutral-700 hover:underline duration-200'>{t('Terug naar hoofdpagina')}</Link>
