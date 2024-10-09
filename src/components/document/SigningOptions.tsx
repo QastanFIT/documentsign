@@ -94,7 +94,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
             </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
-                <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
+                <div className='grid w-full max-w-xl gap-4 mx-4 sm:grid-cols-2'>
                     <div className='col-span-full'>
                         <Label>{t('E-mailadres')} <span className='text-orange-600'>*</span></Label>
                         <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
@@ -197,7 +197,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
 
     function isComplete() {
         let disable = true;
-        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2&&signature_base.length>4000){ disable = false }
+        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2&&signature_base.length>2000){ disable = false }
         return disable
     }
 
@@ -227,7 +227,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
                 </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="flex flex-col items-center justify-center max-h-[95dvh] overflow-auto">
-                <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
+                <div className='grid w-full max-w-xl gap-4 mx-4 sm:grid-cols-2'>
                     <div className='col-span-full'>
                         <Label>{t('E-mailadres')} <span className='text-orange-600'>*</span></Label>
                         <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
@@ -251,7 +251,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
                     </div>
 
                     <div className='col-span-full'>
-                        <div className='flex justify-between items-end'>
+                        <div className='flex items-end justify-between'>
                             <Label>{t('Handtekening')} <span className='text-orange-600'>*</span></Label>
 
                             <div className='flex items-end'>
@@ -516,21 +516,21 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
                         <div className="w-[175px] h-[175px] bg-slate-100 flex justify-center rounded-full">
                             <div ref={animRef} className='w-[150px] h-[200px]'></div>
                         </div>
-                        <p className="font-medium max-w-xs text-center">{t('Gelieve uw kaartlezer aan te sluiten en uw identiteitskaart in te steken')}</p>
+                        <p className="max-w-xs font-medium text-center">{t('Gelieve uw kaartlezer aan te sluiten en uw identiteitskaart in te steken')}</p>
                     </>}
 
                     {help_step === 2 && <>
                         <div className="flex justify-center rounded-full">
                             <Image src={open_app} width={200} height={100} alt="open app" className='rounded-md'/>
                         </div>
-                        <p className="font-medium max-w-xs text-center">{t('Open de applicatie')} <span className='underline'>{t('eID Viewer')}</span> {t('op uw computer')}</p>
+                        <p className="max-w-xs font-medium text-center">{t('Open de applicatie')} <span className='underline'>{t('eID Viewer')}</span> {t('op uw computer')}</p>
                     </>}
 
                     {help_step === 3 && <>
-                        <div className=" flex justify-center rounded-full">
+                        <div className="flex justify-center rounded-full ">
                             <div ref={dndRef} className='w-[500px] h-[300px]'></div>
                         </div>
-                        <p className="font-medium max-w-xs text-center">{t('Sleep uw foto naar het getoonde vak')}</p>
+                        <p className="max-w-xs font-medium text-center">{t('Sleep uw foto naar het getoonde vak')}</p>
                     </>}
                         
                 
@@ -551,7 +551,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
 
                 {!show_help && <>
                 {!card_info && <>
-                <p className="text-lg font-medium max-w-xs text-center">{t('Upload identiteitskaart')}</p>
+                <p className="max-w-xs text-lg font-medium text-center">{t('Upload identiteitskaart')}</p>
                 <div className='flex flex-col gap-1'>
                     <div ref={parentRef} onDragOver={handleDragOver} onDrop={handleDrop} onDragLeave={handleDragLeave} onDragExit={handleDragLeave} className={`${is_over?'bg-orange-100 border-orange-600':'bg-neutral-100 border-neutral-200'} w-[500px] h-[200px] rounded-md border-2 border-dashed duration-300 relative flex flex-col justify-center items-center`}>
                         {is_parsing ? <Loader2 className='w-10 h-10 animate-spin text-neutral-700'/> :<UploadCloud className={`${is_over?'text-orange-600':'text-neutral-700'} h-10 w-10`} strokeWidth={1.5}/>}
@@ -559,12 +559,12 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
                         <div ref={tooltipRef} className={`${!is_over?'invisible':''} absolute rounded-full bg-orange-600 py-1 px-3 w-fit text-sm text-white font-medium shadow-sm select-none z-50`}>{t('identiteitskaart')}</div>
                     </div>
                     <p className='text-sm text-neutral-400'>{t('Sleep uw foto van eID viewer naar het veld hierboven')}.</p>
-                    <button onClick={()=>{setshow_help(true)}} className='w-fit text-neutral-500 font-medium flex justify-center items-center text-sm gap-1 hover:underline'><HelpCircle className='w-4 h-4'/>{t('Hulp nodig?')}</button>
+                    <button onClick={()=>{setshow_help(true)}} className='flex items-center justify-center gap-1 text-sm font-medium w-fit text-neutral-500 hover:underline'><HelpCircle className='w-4 h-4'/>{t('Hulp nodig?')}</button>
                 </div>
                 </>}
 
                 {card_info && <>
-                <div className='max-w-xl w-full mx-4 grid sm:grid-cols-2 gap-4'>
+                <div className='grid w-full max-w-xl gap-4 mx-4 sm:grid-cols-2'>
                     <div className='col-span-full'>
                         <Label>{t('E-mailadres')}</Label>
                         <Input disabled value={data.oCurrentRecipient.clientemail} type='email'/>
@@ -599,7 +599,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
                 <div className="w-[175px] h-[175px] bg-slate-100 flex justify-center rounded-full">
                     <div ref={animRef} className='w-[150px] h-[200px]'></div>
                 </div>
-                <p className="text-lg font-medium max-w-xs text-center">Gelieve uw kaartlezer aan te sluiten en uw identiteitskaart in te steken</p>
+                <p className="max-w-xs text-lg font-medium text-center">Gelieve uw kaartlezer aan te sluiten en uw identiteitskaart in te steken</p>
 
                 <Button onClick={()=>{}} className={`bg-orange-600 gap-2`}><RotateCcw className='w-4 h-4'/> Opnieuw proberen</Button>
                 </>}
