@@ -43,7 +43,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
         mutationFn: async () => {
             try {
                 setis_success(false)
-                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/confirmationcode`, {documenttoken:token, documentpassword:password})
+                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
                 return response
             } catch (error) {
                 throw new Error('')
@@ -159,7 +159,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
         mutationFn: async () => {
             try {
                 setis_success(false)
-                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/confirmationcode`, {documenttoken:token, documentpassword:password})
+                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
                 return response
             } catch (error) {
                 throw new Error('')
