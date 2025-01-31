@@ -2,10 +2,10 @@
 
 import Navbar from '@/components/document/Navbar'
 import { useParams, useSearchParams, useRouter, usePathname } from 'next/navigation'
-import React, { useState, useRef, useEffect, useTransition } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import {useMutation, useQuery} from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 
 import lost from '@/assets/images/files_lost.svg'
 
@@ -24,6 +24,8 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import { Button } from '@/components/ui/button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { useTranslations, useLocale } from 'next-intl'
+import { deleteCookie, getCookie, setCookie } from '@/lib/cookie'
+import Loading from './(components)/loading'
 
 // import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
@@ -43,40 +45,24 @@ const DocumentPage = () => {
   const [numPages, setNumPages] = useState<number>(0);
 
   const [value, setValue] = React.useState("")
+  
+  function switchLocale(locale: string) {
+    //@ts-ignore
+    router.push(`${pathname.replace(/^\/[a-z]{2}\b/, `/${locale}`)}?token=${token}`, { locale: locale });
+    setCookie(`code_${token}`, value, 1)
+  }
 
-  function setCookie(name: string, value: string, days: number) {
-    let expires = "";
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      expires = "; expires=" + date.toUTCString();
+  const { data:documentInfo, isLoading:isLoadingDocumentInfo } = useQuery<DocumentInfo>({
+    queryKey: ['document-info'],
+    queryFn: async () => {
+      return await axios.get(`${process.env.NEXT_PUBLIC_API}documentinfo`, {
+        params: {
+          documenttoken: token
+        }
+      })
     }
-    document.cookie = name + "=" + value + expires + "; path=/";
-  }
-
-  function getCookie(name: string): string | null {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
-
-  function deleteCookie(name: string) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  }
-
-  // useEffect(()=>{
-  //   const code = getCookie(`code_${token}`)
-  //   if(code){
-  //     setValue(code)
-  //     deleteCookie(`code_${token}`)
-  //   }
-  // }, [])
-
+  })
+  
   useEffect(()=>{
     const code = getCookie(`code_${token}`)
     if(value.length === 6 && code){ 
@@ -88,7 +74,7 @@ const DocumentPage = () => {
   const { data:validPassword, mutate:validatePassword, isPending:isPendingValidatePassword, isError, reset } = useMutation({
     mutationKey: [`validate_password_${token}`],
     mutationFn: async () => {
-      const {data} = await axios.post(`api/document/validatepassword`, {
+      const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/validatepassword`, {
         documenttoken: token,
         documentpassword: value
       })
@@ -109,19 +95,15 @@ const DocumentPage = () => {
     }
   }, [])
 
-  function switchLocale(locale: string) {
-    //@ts-ignore
-    router.push(`${pathname.replace(/^\/[a-z]{2}\b/, `/${locale}`)}?token=${token}`, { locale: locale });
-    setCookie(`code_${token}`, value, 1)
-  }
-
   const { data, refetch:refetchDocument, isFetching } = useQuery<DocumentObject | null>({
     queryKey: [`document_${token}`],
     queryFn: async () => {
       try {
-        const {data} = await axios.get(`api/document?token=${token}&documentpassword=${value}`)   
+        const {data} = await axios.get(`${process.env.NEXT_PUBLIC_API}documenttoken?token=${token}&documentpassword=${value}`)   
+        if(data.errorcode!==0){throw new Error(data.content)}
+        const content = data.content.document
         try { 
-          const nextLocale = data.oCurrentRecipient.language === 3 ? 'en' : (data.oCurrentRecipient.language === 5 ? 'fr' : 'nl')   
+          const nextLocale = content.oCurrentRecipient.language === 3 ? 'en' : (content.oCurrentRecipient.language === 5 ? 'fr' : 'nl')   
           if(locale !== nextLocale){
             switchLocale(nextLocale)
           }       
@@ -146,19 +128,27 @@ const DocumentPage = () => {
     codeContainer.current && autoAnimate(codeContainer.current)
   }, [codeContainer])
 
+  const enabled_code = documentInfo?.object?.emailcode;
+
+  const show_document = enabled_code ? validPassword : true
+
   return (
     <>
     <div className='flex flex-col h-full'>
       <Navbar document={data}/>
 
-      {!validPassword 
+      {isLoadingDocumentInfo 
+      ? <Loading />
+      :
+      <>
+      {!show_document 
       ?
       <main className='bg-white h-full flex flex-col justify-center items-center bg-gradient-to-bl from-[#91c8ed2d] via-[#fa9eed2d] to-[#ff7b003d]'>
 
-        <div ref={codeContainer} className='bg-white rounded-xl border shadow-lg p-10 flex flex-col justify-center items-center'>
+        <div ref={codeContainer} className='flex flex-col items-center justify-center p-10 bg-white border shadow-lg rounded-xl'>
           <div className='w-12 min-h-[48px] h-12 bg-primary flex justify-center items-center text-white mb-10 rounded-lg'>{value.length < 6 ? <Lock className='w-6 h-6'/> : <LockOpen className="w-6 h-6"/>}</div>
           <p className='text-3xl font-bold'>{t('Voer uw code in')}</p>
-          <p className='text-neutral-600 mt-1 text-center'>{t('We hebben u een mail gestuurd met uw code')}</p>
+          <p className='mt-1 text-center text-neutral-600'>{t('We hebben u een mail gestuurd met uw code')}</p>
 
           <div className='mt-10'>
           <InputOTP maxLength={6} disabled={isError || isPendingValidatePassword} value={value} onChange={(value) => setValue(value)}>
@@ -177,30 +167,30 @@ const DocumentPage = () => {
         </div>
       </main>
       :
-      <main className='bg-slate-50 h-full flex flex-col items-center'>
+      <main className='flex flex-col items-center h-full bg-slate-50'>
         
         {(!token || (!data && !isFetching)) &&
-        <div className='h-full w-full grid grid-cols-2'>
+        <div className='grid w-full h-full grid-cols-2'>
           <div className='flex justify-center mt-16 lg:mt-32'>
             <div className='w-5/6'>
               <h2 className={`${josefin.className} lg:max-w-[500px] text-3xl lg:text-6xl text-neutral-400 leading-tight font-semibold`}><span className='text-neutral-800'>{t('Sorry')}</span>, {t('dit document kon niet worden gevonden')}</h2>
               <p className='mt-4 text-neutral-600'>{t('Het document waar u naar opzoek was is niet gevonden')}</p>
 
-              <div className='mt-12 flex items-center gap-2'>
-                <Link href="/" className='text-neutral-300 hover:text-neutral-700 hover:underline duration-200'>{t('Terug naar hoofdpagina')}</Link>
+              <div className='flex items-center gap-2 mt-12'>
+                <Link href="/" className='duration-200 text-neutral-400 hover:text-neutral-700 hover:underline'>{t('Terug naar hoofdpagina')}</Link>
                 <Dot className='text-neutral-300'/>
-                <Link href="/" className='text-neutral-300 hover:text-neutral-700 hover:underline duration-200'>{t('Qastan bezoeken')}</Link>
+                <Link href="/" className='duration-200 text-neutral-400 hover:text-neutral-700 hover:underline'>{t('Qastan bezoeken')}</Link>
               </div>
             </div>
           </div>
           <div>
-            <Image className='h-1/2 mt-16 lg:mt-32' src={lost} alt="not found" />
+            <Image className='mt-16 h-1/2 lg:mt-32' src={lost} alt="not found" />
           </div>
         </div>
         }
 
         {(token && (data || isFetching)) && 
-        <div className='flex h-full w-full relative'>
+        <div className='relative flex w-full h-full'>
 
           {/* Side nav */}
           <SideNav data={data}/>
@@ -216,7 +206,7 @@ const DocumentPage = () => {
             {data && 
             <Document file={`data:application/pdf;base64,${data.document}`} className='max-h-full' onLoadSuccess={onDocumentLoadSuccess}>
               {Array.from(new Array(numPages), (_, index) => (
-                <Page key={`page_${index + 1}`} pageNumber={index + 1} className='bg-white w-full min-w-full mb-4 shadow-xl shadow-slate-200 rounded-lg overflow-hidden'/>
+                <Page key={`page_${index + 1}`} pageNumber={index + 1} className='w-full min-w-full mb-4 overflow-hidden bg-white rounded-lg shadow-xl shadow-slate-200'/>
               ))}
             </Document>
             }
@@ -229,6 +219,9 @@ const DocumentPage = () => {
 
       </main>
       }
+      </>
+      }
+      
     </div>
     </>
   )
