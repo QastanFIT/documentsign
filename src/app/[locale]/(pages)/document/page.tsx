@@ -7,8 +7,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 
-import lost from '@/assets/images/files_lost.svg'
-
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
@@ -16,16 +14,14 @@ import autoAnimate from '@formkit/auto-animate'
 
 import SigningOptions from '@/components/document/SigningOptions'
 import SideNav from '@/components/document/SideNav'
-import { josefin } from '@/assets/fonts/josefin'
-import Link from 'next/link'
-import { Dot, Loader2, Lock, LockOpen } from 'lucide-react'
-import Image from 'next/image'
+import { Loader2, Lock, LockOpen } from 'lucide-react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { Button } from '@/components/ui/button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { useTranslations, useLocale } from 'next-intl'
 import { deleteCookie, getCookie, setCookie } from '@/lib/cookie'
 import Loading from './(components)/loading'
+import ErrorComponent from './(components)/error'
 
 // import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
@@ -33,7 +29,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/l
 const DocumentPage = () => {
   const locale = useLocale();
   const router = useRouter()
-  const params = useParams();
   const pathname = usePathname()
 
   const t = useTranslations()
@@ -55,13 +50,22 @@ const DocumentPage = () => {
   const { data:documentInfo, isLoading:isLoadingDocumentInfo } = useQuery<DocumentInfo>({
     queryKey: ['document-info'],
     queryFn: async () => {
-      return await axios.get(`${process.env.NEXT_PUBLIC_API}documentinfo`, {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API}documentinfo`, {
         params: {
           documenttoken: token
         }
       })
+      return data;
     }
   })
+
+  useEffect(()=>{
+    if(documentInfo) {
+      if(documentInfo?.object?.emailcode === false){ 
+        refetchDocument() 
+      }
+    }
+  }, [documentInfo])
   
   useEffect(()=>{
     const code = getCookie(`code_${token}`)
@@ -71,15 +75,14 @@ const DocumentPage = () => {
     }
   }, [value])
 
-  const { data:validPassword, mutate:validatePassword, isPending:isPendingValidatePassword, isError, reset } = useMutation({
+  const { mutate:validatePassword, isPending:isPendingValidatePassword, isError, reset } = useMutation({
     mutationKey: [`validate_password_${token}`],
     mutationFn: async () => {
       const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/validatepassword`, {
         documenttoken: token,
         documentpassword: value
       })
-      if(data.errorcode!==0){ throw new Error(data.message) }
-      //createCookie(`code_${token}`, value, 1)
+      if(data.errorcode!==0){ throw new Error(data.content) }
       refetchDocument()
       return true
     },
@@ -95,29 +98,23 @@ const DocumentPage = () => {
     }
   }, [])
 
-  const { data, refetch:refetchDocument, isFetching } = useQuery<DocumentObject | null>({
-    queryKey: [`document_${token}`],
-    queryFn: async () => {
-      try {
-        const {data} = await axios.get(`${process.env.NEXT_PUBLIC_API}documenttoken?token=${token}&documentpassword=${value}`)   
-        if(data.errorcode!==0){throw new Error(data.content)}
-        const content = data.content.document
-        try { 
-          const nextLocale = content.oCurrentRecipient.language === 3 ? 'en' : (content.oCurrentRecipient.language === 5 ? 'fr' : 'nl')   
-          if(locale !== nextLocale){
-            switchLocale(nextLocale)
-          }       
-        } catch(e){}
-        return data
-      } catch (error) {
-        return null
+  const { data:documentContent, mutate:refetchDocument, isError:isErrorDocument } = useMutation<DocumentObject | null>({
+    mutationKey: [`document_${token}`],
+    mutationFn: async () => {
+      const {data} = await axios.get(`${process.env.NEXT_PUBLIC_API}document?documenttoken=${token}&documentpassword=${value}`)   
+      if(data.errorcode!==0){
+        throw new Error(data.content)
       }
+      const content = data.content.document
+      try { 
+        const nextLocale = content.oCurrentRecipient.language === 3 ? 'en' : (content.oCurrentRecipient.language === 5 ? 'fr' : 'nl')   
+        if(locale !== nextLocale){
+          switchLocale(nextLocale)
+        }       
+      } catch(e){}
+      return data.content.document
     },
-    enabled: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchIntervalInBackground: false
+    retry: false,
   })
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -128,20 +125,16 @@ const DocumentPage = () => {
     codeContainer.current && autoAnimate(codeContainer.current)
   }, [codeContainer])
 
-  const enabled_code = documentInfo?.object?.emailcode;
-
-  const show_document = enabled_code ? validPassword : true
+  if(!token){ return <>Invalid token</>}
+  if(isErrorDocument){ return <ErrorComponent /> }
+  {isLoadingDocumentInfo && <Loading />}
 
   return (
     <>
     <div className='flex flex-col h-full'>
-      <Navbar document={data}/>
+      <Navbar document={documentContent}/>
 
-      {isLoadingDocumentInfo 
-      ? <Loading />
-      :
-      <>
-      {!show_document 
+      {!documentContent 
       ?
       <main className='bg-white h-full flex flex-col justify-center items-center bg-gradient-to-bl from-[#91c8ed2d] via-[#fa9eed2d] to-[#ff7b003d]'>
 
@@ -168,48 +161,27 @@ const DocumentPage = () => {
       </main>
       :
       <main className='flex flex-col items-center h-full bg-slate-50'>
-        
-        {(!token || (!data && !isFetching)) &&
-        <div className='grid w-full h-full grid-cols-2'>
-          <div className='flex justify-center mt-16 lg:mt-32'>
-            <div className='w-5/6'>
-              <h2 className={`${josefin.className} lg:max-w-[500px] text-3xl lg:text-6xl text-neutral-400 leading-tight font-semibold`}><span className='text-neutral-800'>{t('Sorry')}</span>, {t('dit document kon niet worden gevonden')}</h2>
-              <p className='mt-4 text-neutral-600'>{t('Het document waar u naar opzoek was is niet gevonden')}</p>
-
-              <div className='flex items-center gap-2 mt-12'>
-                <Link href="/" className='duration-200 text-neutral-400 hover:text-neutral-700 hover:underline'>{t('Terug naar hoofdpagina')}</Link>
-                <Dot className='text-neutral-300'/>
-                <Link href="/" className='duration-200 text-neutral-400 hover:text-neutral-700 hover:underline'>{t('Qastan bezoeken')}</Link>
-              </div>
-            </div>
-          </div>
-          <div>
-            <Image className='mt-16 h-1/2 lg:mt-32' src={lost} alt="not found" />
-          </div>
-        </div>
-        }
-
-        {(token && (data || isFetching)) && 
+        {(documentContent) && 
         <div className='relative flex w-full h-full'>
 
           {/* Side nav */}
-          <SideNav data={data}/>
+          <SideNav data={documentContent}/>
 
           {/* Content  */}
           <div className='flex justify-center w-full max-h-[calc(100vh-45px)] overflow-auto'>
 
             {/* Menu signing */}
-            {data && <SigningOptions refetch={()=>{refetchDocument()}} data={data} password={value} token={token}/>}
+            <SigningOptions refetch={()=>{refetchDocument()}} data={documentContent} password={value} token={token}/>
 
             {/* Document preview */}
             <div className='max-w-[100dvw] overflow-auto mt-10 sm:px-10 w-fit mx-4'>
-            {data && 
-            <Document file={`data:application/pdf;base64,${data.document}`} className='max-h-full' onLoadSuccess={onDocumentLoadSuccess}>
+            
+            <Document file={`data:application/pdf;base64,${documentContent.document}`} className='max-h-full' onLoadSuccess={onDocumentLoadSuccess}>
               {Array.from(new Array(numPages), (_, index) => (
                 <Page key={`page_${index + 1}`} pageNumber={index + 1} className='w-full min-w-full mb-4 overflow-hidden bg-white rounded-lg shadow-xl shadow-slate-200'/>
               ))}
             </Document>
-            }
+            
             </div>
 
           </div>
@@ -218,8 +190,6 @@ const DocumentPage = () => {
         }
 
       </main>
-      }
-      </>
       }
       
     </div>
