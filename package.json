@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 8080",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
     "lint": "next lint"
   },
@@ -29,12 +30,14 @@
     "i18next-chained-backend": "^4.6.2",
     "i18next-localstorage-backend": "^4.2.0",
     "i18next-locize-backend": "^6.4.2",
+    "i18next-resources-to-backend": "^1.2.1",
     "input-otp": "^1.2.4",
     "lodash": "^4.17.21",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.367.0",
     "negotiator": "^0.6.3",
     "next": "~13.4.3",
+    "next-i18n-router": "^5.5.1",
     "next-intl": "^3.11.3",
     "next-translate": "^2.6.2",
     "ni18n": "^1.1.0",

@@ -1,7 +1,7 @@
 'use client'
 
 import Navbar from '@/components/document/Navbar'
-import { useParams, useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import React, { useState, useRef, useEffect } from 'react'
 
 import {useMutation, useQuery} from '@tanstack/react-query'
@@ -15,23 +15,23 @@ import autoAnimate from '@formkit/auto-animate'
 import SigningOptions from '@/components/document/SigningOptions'
 import SideNav from '@/components/document/SideNav'
 import { Loader2, Lock, LockOpen } from 'lucide-react'
-import { Document, Page, pdfjs } from 'react-pdf'
+import { Document as Doc, Page, pdfjs } from 'react-pdf'
 import { Button } from '@/components/ui/button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
-import { useTranslations, useLocale } from 'next-intl'
 import { deleteCookie, getCookie, setCookie } from '@/lib/cookie'
 import Loading from './(components)/loading'
 import ErrorComponent from './(components)/error'
+import { useTranslation } from 'react-i18next';
 
-// import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
-const DocumentPage = () => {
-  const locale = useLocale();
+export default function Document({ params }: { params: {locale: string }})  {
+  const { t } = useTranslation();
+  const locale = params.locale;
+  
   const router = useRouter()
   const pathname = usePathname()
 
-  const t = useTranslations()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
 
@@ -176,11 +176,11 @@ const DocumentPage = () => {
             {/* Document preview */}
             <div className='max-w-[100dvw] overflow-auto mt-10 sm:px-10 w-fit mx-4'>
             
-            <Document file={`data:application/pdf;base64,${documentContent.document}`} className='max-h-full' onLoadSuccess={onDocumentLoadSuccess}>
+            <Doc file={`data:application/pdf;base64,${documentContent.document}`} className='max-h-full' onLoadSuccess={onDocumentLoadSuccess}>
               {Array.from(new Array(numPages), (_, index) => (
                 <Page key={`page_${index + 1}`} pageNumber={index + 1} className='w-full min-w-full mb-4 overflow-hidden bg-white rounded-lg shadow-xl shadow-slate-200'/>
               ))}
-            </Document>
+            </Doc>
             
             </div>
 
@@ -196,5 +196,3 @@ const DocumentPage = () => {
     </>
   )
 }
-
-export default DocumentPage

@@ -1,5 +1,5 @@
 import { Dot } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useTranslation } from 'react-i18next';
 import { josefin } from '@/assets/fonts/josefin'
 import lost from '@/assets/images/files_lost.svg'
 
@@ -8,7 +8,7 @@ import Link from 'next/link'
 import React from 'react'
 
 const Error = () => {
-    const t = useTranslations()
+    const { t } = useTranslation()
     
   return (
     <div className='grid w-full h-full grid-cols-2'>

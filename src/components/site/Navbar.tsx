@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import React, { useState } from 'react'
 import Link from 'next/link'
@@ -6,16 +6,16 @@ import { Button } from '../ui/button'
 import { Menu, X } from 'lucide-react'
 import logo from '../../assets/images/logo.svg'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
-  const t = useTranslations()
+  const { t } = useTranslation();
   const [is_open, setis_open] = useState(false);
 
   return (
-    <nav className='wg-white border-b shadow-md p-2 z-10'>
-        <div className='mx-auto max-w-7xl grid grid-cols-2 sm:grid-cols-3'>
-            <Link href="" className='w-fit flex items-center'><div className='flex font-bold font-josefin text-lg'><Image src={logo} className='h-7 w-fit' alt="Logo digitalsign Qastan"/></div></Link>
+    <nav className='z-10 p-2 border-b shadow-md wg-white'>
+        <div className='grid grid-cols-2 mx-auto max-w-7xl sm:grid-cols-3'>
+            <Link href="" className='flex items-center w-fit'><div className='flex text-lg font-bold font-josefin'><Image src={logo} className='h-7 w-fit' alt="Logo digitalsign Qastan"/></div></Link>
 
             {/* Mobile nav */}
             <div className='sm:hidden'>
@@ -29,13 +29,13 @@ const Navbar = () => {
             </div>
 
             {/* Computer nav */}
-            <div className='hidden sm:flex items-center justify-center gap-10 font-semibold'>
+            <div className='items-center justify-center hidden gap-10 font-semibold sm:flex'>
                 <Link href="#waarom" className='relative after:duration-200 after:content-[""] after:absolute after:w-0 hover:after:w-full after:h-px after:bg-black after:left-0 after:bottom-0'>{t('Waarom')}</Link>
                 <Link href="#hoe" className='relative after:duration-200 after:content-[""] after:absolute after:w-0 hover:after:w-full after:h-px after:bg-black after:left-0 after:bottom-0'>{t('Hoe')}</Link>
                 <Link href="#digitaliseren" className='relative after:duration-200 after:content-[""] after:absolute after:w-0 hover:after:w-full after:h-px after:bg-black after:left-0 after:bottom-0'>{t('Digitaliseren')}</Link>
             </div>
 
-            <div className='hidden sm:flex items-center justify-end'>
+            <div className='items-center justify-end hidden sm:flex'>
               <Link href="#contacteren"><Button variant='secondary'>{t('Contacteren')}</Button></Link>
             </div>
         </div>
