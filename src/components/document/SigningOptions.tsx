@@ -19,6 +19,7 @@ import { isAfter, isBefore } from 'date-fns'
 import open_app from '@/assets/images/help_open_app.svg'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import { CONFIG } from '@/constants/config'
 
 type OptionProps = {
     is_open: boolean
@@ -43,7 +44,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
         mutationFn: async () => {
             try {
                 setis_success(false)
-                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
+                const {data:response} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
                 return response
             } catch (error) {
                 throw new Error('')
@@ -56,7 +57,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
     const { isPending:isPendingSigning, mutate:validate, isSuccess:isSuccessSigning, isError:isErrorSigning, reset:resetSigning } = useMutation({
         mutationFn: async () => {
             try {
-                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/validate`, {
+                const {data:response} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/validate`, {
                     documenttoken:token,
                     confirmationcode: code,
                     company: company,
@@ -159,7 +160,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
         mutationFn: async () => {
             try {
                 setis_success(false)
-                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
+                const {data:response} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
                 return response
             } catch (error) {
                 throw new Error('')
@@ -182,7 +183,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
                     email:data.oCurrentRecipient.clientemail,
                     image: signature_base
                 }
-                const {data:response} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/validate`, obj)
+                const {data:response} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/validate`, obj)
                 if(response.errorcode===0){
                     setis_open(false)
                     refetch()
@@ -344,7 +345,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
 
     const { mutate:signDocument, isError, isPending, isSuccess, reset } = useMutation({
         mutationFn: async () => {
-            const { data:result } = await axios.post(`${process.env.NEXT_PUBLIC_API}document/validate`, {
+            const { data:result } = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/validate`, {
                 documenttoken: data.documenttoken,
                 documentpassword: password,
                 eid: true,

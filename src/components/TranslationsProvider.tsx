@@ -19,8 +19,6 @@ export default function TranslationsProvider({
 }) {
   const i18n = createInstance();
 
-  console.log("locale", locale)
-
   initTranslations(locale, namespaces, i18n, resources);
 
   return (

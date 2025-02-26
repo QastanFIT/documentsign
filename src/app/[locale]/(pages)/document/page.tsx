@@ -22,12 +22,14 @@ import { deleteCookie, getCookie, setCookie } from '@/lib/cookie'
 import Loading from './(components)/loading'
 import ErrorComponent from './(components)/error'
 import { useTranslation } from 'react-i18next';
+import i18nConfig from '@/i18nConfig'
+import { CONFIG } from '@/constants/config'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
-export default function Document({ params }: { params: {locale: string }})  {
+export default function Document()  {
   const { t } = useTranslation();
-  const locale = params.locale;
+  const locale = i18nConfig.defaultLocale;
   
   const router = useRouter()
   const pathname = usePathname()
@@ -50,7 +52,7 @@ export default function Document({ params }: { params: {locale: string }})  {
   const { data:documentInfo, isLoading:isLoadingDocumentInfo } = useQuery<DocumentInfo>({
     queryKey: ['document-info'],
     queryFn: async () => {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API}documentinfo`, {
+      const { data } = await axios.get(`${CONFIG.NEXT_PUBLIC_API}documentinfo`, {
         params: {
           documenttoken: token
         }
@@ -78,7 +80,7 @@ export default function Document({ params }: { params: {locale: string }})  {
   const { mutate:validatePassword, isPending:isPendingValidatePassword, isError, reset } = useMutation({
     mutationKey: [`validate_password_${token}`],
     mutationFn: async () => {
-      const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API}document/validatepassword`, {
+      const {data} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/validatepassword`, {
         documenttoken: token,
         documentpassword: value
       })
@@ -101,7 +103,7 @@ export default function Document({ params }: { params: {locale: string }})  {
   const { data:documentContent, mutate:refetchDocument, isError:isErrorDocument } = useMutation<DocumentObject | null>({
     mutationKey: [`document_${token}`],
     mutationFn: async () => {
-      const {data} = await axios.get(`${process.env.NEXT_PUBLIC_API}document?documenttoken=${token}&documentpassword=${value}`)   
+      const {data} = await axios.get(`${CONFIG.NEXT_PUBLIC_API}document?documenttoken=${token}&documentpassword=${value}`)   
       if(data.errorcode!==0){
         throw new Error(data.content)
       }

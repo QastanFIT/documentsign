@@ -7,7 +7,7 @@ const nextConfig = {
     distDir: 'build',
     trailingSlash: true,
     // Error: Page with `dynamic = "error"` couldn't be rendered statically because it used `headers`.
-    // output: 'export',
+    output: 'export',
     reactStrictMode: true,
     swcMinify: true,
     images: {
