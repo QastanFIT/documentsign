@@ -5,7 +5,6 @@ import { Metadata } from 'next';
 import { dir } from 'i18next';
 import initTranslations from "@/app/i18n";
 import TranslationsProvider from "@/components/TranslationsProvider";
-import NotFound from './not-found';
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -21,8 +20,7 @@ export const metadata: Metadata = {
 
 
 export function generateStaticParams() {
-  const locales = i18nConfig.locales.map(locale => ({ locale }));
-  return locales
+  return i18nConfig.locales.map(locale => ({ locale }));
 }
 
 const i18nNamespaces = ['document'];
@@ -33,22 +31,24 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
   const { resources } = await initTranslations(locale, i18nNamespaces);
 
   if (!i18nConfig.locales.includes(locale)) {
-    <NotFound />
+    return (
+      <p>Language not supported.</p>
+    )
   }
 
   return (
-    // <html lang={locale} dir={dir(locale)}>
-    //   <body suppressHydrationWarning={true}>
-      <TranslationsProvider
-        namespaces={i18nNamespaces}
-        locale={locale}
-        resources={resources}
-      >
-        <Providers locale={locale}>
-          {children}
-        </Providers>
-      </TranslationsProvider>
-    //   </body>
-    // </html>
+    <html lang={locale} dir={dir(locale)}>
+      <body suppressHydrationWarning={true}>
+        <TranslationsProvider
+          namespaces={i18nNamespaces}
+          locale={locale}
+          resources={resources}
+        >
+          <Providers locale={locale}>
+            {children}
+          </Providers>
+        </TranslationsProvider>
+      </body>
+    </html>
   )
 }

@@ -10,9 +10,9 @@ const nextConfig = {
     //   locales: i18nConfig.locales,
     //   defaultLocale: i18nConfig.defaultLocale,
     // },
+    
     distDir: 'build',
     trailingSlash: true,
-    // Error: Page with `dynamic = "error"` couldn't be rendered statically because it used `headers`.
     output: 'export',
     reactStrictMode: true,
     swcMinify: true,

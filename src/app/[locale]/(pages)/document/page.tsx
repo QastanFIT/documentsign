@@ -27,7 +27,7 @@ import { CONFIG } from '@/constants/config'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
-export default function Document()  {
+export default function DocumentPage()  {
   const { t } = useTranslation();
   const locale = i18nConfig.defaultLocale;
   
@@ -44,8 +44,10 @@ export default function Document()  {
   const [value, setValue] = React.useState("")
   
   function switchLocale(locale: string) {
-    //@ts-ignore
-    router.push(`${pathname.replace(/^\/[a-z]{2}\b/, `/${locale}`)}?token=${token}`, { locale: locale });
+    router.push(`${pathname.replace(/^\/[a-z]{2}\b/, `/${locale}`)}?token=${token}`, { 
+      // @ts-ignore
+      locale: locale 
+    });
     setCookie(`code_${token}`, value, 1)
   }
 
@@ -107,14 +109,14 @@ export default function Document()  {
       if(data.errorcode!==0){
         throw new Error(data.content)
       }
-      const content = data.content.document
+      const content = data?.content?.document
       try { 
         const nextLocale = content.oCurrentRecipient.language === 3 ? 'en' : (content.oCurrentRecipient.language === 5 ? 'fr' : 'nl')   
         if(locale !== nextLocale){
           switchLocale(nextLocale)
         }       
       } catch(e){}
-      return data.content.document
+      return content
     },
     retry: false,
   })
@@ -173,7 +175,11 @@ export default function Document()  {
           <div className='flex justify-center w-full max-h-[calc(100vh-45px)] overflow-auto'>
 
             {/* Menu signing */}
-            <SigningOptions refetch={()=>{refetchDocument()}} data={documentContent} password={value} token={token}/>
+            {/* Client side only */}
+            {typeof navigator !== "undefined" &&
+              <SigningOptions refetch={()=>{refetchDocument()}} data={documentContent} password={value} token={token}/>
+            }
+           
 
             {/* Document preview */}
             <div className='max-w-[100dvw] overflow-auto mt-10 sm:px-10 w-fit mx-4'>
