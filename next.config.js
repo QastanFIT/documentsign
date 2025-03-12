@@ -1,9 +1,15 @@
-const  createNextIntlPlugin = require('next-intl/plugin')
+const createNextIntlPlugin = require('next-intl/plugin')
+const i18nConfig = require('./src/i18nConfig')
 
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Specified "i18n" cannot be used with "output: export"
+    // i18n: {
+    //   locales: i18nConfig.locales,
+    //   defaultLocale: i18nConfig.defaultLocale,
+    // },
     distDir: 'build',
     trailingSlash: true,
     // Error: Page with `dynamic = "error"` couldn't be rendered statically because it used `headers`.

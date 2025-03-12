@@ -5,10 +5,13 @@ import { Metadata } from 'next';
 import { dir } from 'i18next';
 import initTranslations from "@/app/i18n";
 import TranslationsProvider from "@/components/TranslationsProvider";
+import NotFound from './not-found';
 
 interface RootLayoutProps {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { 
+    locale: string
+  };
 }
 
 export const metadata: Metadata = {
@@ -18,7 +21,8 @@ export const metadata: Metadata = {
 
 
 export function generateStaticParams() {
-  return i18nConfig.locales.map(locale => ({ locale }));
+  const locales = i18nConfig.locales.map(locale => ({ locale }));
+  return locales
 }
 
 const i18nNamespaces = ['document'];
@@ -29,12 +33,12 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
   const { resources } = await initTranslations(locale, i18nNamespaces);
 
   if (!i18nConfig.locales.includes(locale)) {
-    <p>Not found</p>
+    <NotFound />
   }
 
   return (
-    <html lang={locale} dir={dir(locale)}>
-      <body suppressHydrationWarning={true}>
+    // <html lang={locale} dir={dir(locale)}>
+    //   <body suppressHydrationWarning={true}>
       <TranslationsProvider
         namespaces={i18nNamespaces}
         locale={locale}
@@ -44,7 +48,7 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
           {children}
         </Providers>
       </TranslationsProvider>
-      </body>
-    </html>
+    //   </body>
+    // </html>
   )
 }

@@ -12,7 +12,7 @@ import ContactHeader from "@/components/site/home/ContactHeader";
 import { useTranslation } from "react-i18next";
 
 const Homepage = () => {
-    const { t } = useTranslation()
+  const { t } = useTranslation()
     
   return (
     <>
