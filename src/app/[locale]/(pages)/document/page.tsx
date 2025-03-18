@@ -1,6 +1,6 @@
 'use client'
 
-import Navbar from '@/components/document/Navbar'
+import Navbar from './(components)/navbar'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import React, { useState, useRef, useEffect } from 'react'
 
@@ -12,8 +12,8 @@ import 'react-pdf/dist/Page/TextLayer.css'
 
 import autoAnimate from '@formkit/auto-animate'
 
-import SigningOptions from '@/components/document/SigningOptions'
-import SideNav from '@/components/document/SideNav'
+import SigningOptions from '@/app/[locale]/(pages)/document/(components)/signing-options'
+import SideNav from './(components)/sidenav'
 import { Loader2, Lock, LockOpen } from 'lucide-react'
 import { Document as Doc, Page, pdfjs } from 'react-pdf'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,7 @@ import ErrorComponent from './(components)/error'
 import { useTranslation } from 'react-i18next';
 import i18nConfig from '@/i18nConfig'
 import { CONFIG } from '@/constants/config'
+import { Toaster } from 'react-hot-toast'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
@@ -102,7 +103,7 @@ export default function DocumentPage()  {
     }
   }, [])
 
-  const { data:documentContent, mutate:refetchDocument, isError:isErrorDocument } = useMutation<DocumentObject | null>({
+  const { data:documentContent, mutate:refetchDocument, isError:isErrorDocument, isPending:isGettingDocumentContent } = useMutation<DocumentObject | null>({
     mutationKey: [`document_${token}`],
     mutationFn: async () => {
       const {data} = await axios.get(`${CONFIG.NEXT_PUBLIC_API}document?documenttoken=${token}&documentpassword=${value}`)   
@@ -131,10 +132,13 @@ export default function DocumentPage()  {
 
   if(!token){ return <>Invalid token</>}
   if(isErrorDocument){ return <ErrorComponent /> }
-  {isLoadingDocumentInfo && <Loading />}
+  if(isLoadingDocumentInfo || isGettingDocumentContent) {
+    return <Loading />
+  } 
 
   return (
     <>
+    <Toaster />
     <div className='flex flex-col h-full'>
       <Navbar document={documentContent}/>
 

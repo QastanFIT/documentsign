@@ -3,10 +3,10 @@
 import { josefin } from '@/assets/fonts/josefin'
 import { Check, Eraser, Loader2, Mail, MonitorSmartphone, PenTool, RotateCcw, Trash2, X, XCircle, UploadCloud, HelpCircle } from 'lucide-react'
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../ui/sheet'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../../../../../components/ui/sheet'
+import { Label } from '../../../../../components/ui/label'
+import { Input } from '../../../../../components/ui/input'
+import { Button } from '../../../../../components/ui/button'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
@@ -18,7 +18,7 @@ import { first, isEqual } from "lodash"
 import { isAfter, isBefore } from 'date-fns'
 import open_app from '@/assets/images/help_open_app.svg'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import { useTranslation } from 'react-i18next';
 import { CONFIG } from '@/constants/config'
 
 type OptionProps = {
@@ -31,7 +31,7 @@ type OptionProps = {
 }
 
 const EmailOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
-    const t = useTranslations()
+    const { t } = useTranslation()
 
     const [firstname, setfirstname] = useState('');
     const [lastname, setlastname] = useState('');
@@ -81,7 +81,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
     function isComplete() {
         let disable = true;
 
-        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2){ disable = false }
+        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>0 && company.length>0){ disable = false }
 
         return disable
     }
@@ -144,7 +144,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
 }
 
 const DrawOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
-    const t = useTranslations()
+    const { t } = useTranslation()
     const sketchRef = useRef<ReactSketchCanvasRef | null>(null)
     const [eraserMode, seteraserMode] = useState(false);
 
@@ -161,6 +161,9 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
             try {
                 setis_success(false)
                 const {data:response} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/setconfirmationcode`, {documenttoken:token, documentpassword:password})
+                toast.success(t('De code wordt verstuurd naar uw e-mailadres dit kan even duren'), {
+                    duration: 5000
+                })
                 return response
             } catch (error) {
                 throw new Error('')
@@ -198,7 +201,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
 
     function isComplete() {
         let disable = true;
-        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>2 && company.length>2&&signature_base.length>2000){ disable = false }
+        if(data.oCurrentRecipient.clientemail.length>1 && code.length>1 && lastname.length>0 && company.length>0&&signature_base.length>2000){ disable = false }
         return disable
     }
 
@@ -314,7 +317,7 @@ type CardInformation = {
 }
 
 const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
-    const t = useTranslations()
+    const { t } = useTranslation()
     const [visible, setvisible] = useState(false);
     const [is_card_inserted, setis_card_inserted] = useState(false);
     const [card_information, setcard_information] = useState<CardInformation | null>(null);
@@ -615,7 +618,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
 
 const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, password:string, token:string, refetch:()=>void}) => {
     const [is_open, setis_open] = useState(false);
-    const t = useTranslations()
+    const { t } = useTranslation()
 
     return (
     <div className={`${(!data.mail2faenabled && !data.signatureenabled && !data.eidenabled) && 'hidden'} ${is_open ? 'p-2 bg-white shadow-xl gap-2' : ''} fixed bottom-10  rounded-md flex items-center z-10`}>
