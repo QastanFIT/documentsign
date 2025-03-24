@@ -20,8 +20,10 @@ import open_app from '@/assets/images/help_open_app.svg'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next';
 import { CONFIG } from '@/constants/config'
+import { hasSingleSigningOption } from '@/lib/utils'
 
 type OptionProps = {
+    defaultOpen?: boolean
     is_open: boolean
     data: DocumentObject
     setis_open: any;
@@ -30,9 +32,9 @@ type OptionProps = {
     token: string
 }
 
-const EmailOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
+const EmailOption = ({is_open, data, setis_open, refetch, password, token, defaultOpen}:OptionProps) => {
     const { t } = useTranslation()
-
+    const [sheet_open, setsheet_open] = useState<boolean>(defaultOpen || false);
     const [firstname, setfirstname] = useState('');
     const [lastname, setlastname] = useState('');
     const [company, setcompany] = useState('');
@@ -40,6 +42,11 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
     const [code, setcode] = useState('');
 
     const [is_success, setis_success] = useState(false);
+
+    useEffect(()=>{
+        if(sheet_open !== defaultOpen && typeof defaultOpen === "boolean"){ setsheet_open(defaultOpen) }
+    }, [defaultOpen])
+    
     const { isPending, mutate:sendConfirmationCode, isSuccess, isError, reset } = useMutation({
         mutationFn: async () => {
             try {
@@ -67,8 +74,12 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
                     email: data.oCurrentRecipient.clientemail
                 })
                 if(response.errorcode===0){
+                    setsheet_open(false);
                     setis_open(false)
                     refetch()
+                }
+                else {
+                    throw new Error(response?.content || '')
                 }
                 return response
             } catch (error) {
@@ -87,7 +98,7 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
     }
 
     return (
-        <Sheet>
+        <Sheet onOpenChange={(o)=>{setsheet_open(o)}} open={sheet_open}>
             <SheetTrigger asChild>
             <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
                 <Mail className='w-5'/>
@@ -143,7 +154,8 @@ const EmailOption = ({is_open, data, setis_open, refetch, password, token}:Optio
     )
 }
 
-const DrawOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
+const DrawOption = ({is_open, data, setis_open, refetch, password, token, defaultOpen}:OptionProps) => {
+    const [sheet_open, setsheet_open] = useState<boolean>(defaultOpen || false);
     const { t } = useTranslation()
     const sketchRef = useRef<ReactSketchCanvasRef | null>(null)
     const [eraserMode, seteraserMode] = useState(false);
@@ -156,6 +168,11 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
     const [signature_base, setsignature_base] = useState('');
 
     const [is_success, setis_success] = useState(false);
+
+    useEffect(()=>{
+        if(sheet_open !== defaultOpen && typeof defaultOpen === "boolean"){ setsheet_open(defaultOpen) }
+    }, [defaultOpen])
+
     const { isPending, mutate:sendConfirmationCode, isSuccess, isError, reset } = useMutation({
         mutationFn: async () => {
             try {
@@ -188,8 +205,12 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
                 }
                 const {data:response} = await axios.post(`${CONFIG.NEXT_PUBLIC_API}document/validate`, obj)
                 if(response.errorcode===0){
-                    setis_open(false)
+                    setis_open(false);
+                    setsheet_open(false);
                     refetch()
+                }
+                else {
+                    throw new Error(response?.content || '')
                 }
                 return response
             } catch (error) {
@@ -223,7 +244,7 @@ const DrawOption = ({is_open, data, setis_open, refetch, password, token}:Option
     }
 
     return (
-        <Sheet>
+        <Sheet open={sheet_open} onOpenChange={(o)=>{setsheet_open(o)}}>
             <SheetTrigger asChild>
                 <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
                     <PenTool className='w-5'/>
@@ -316,11 +337,16 @@ type CardInformation = {
     nationality: string;
 }
 
-const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionProps) => {
+const EidOption = ({is_open, data, setis_open, refetch, password, defaultOpen}:OptionProps) => {
     const { t } = useTranslation()
+    const [sheet_open, setsheet_open] = useState<boolean>(defaultOpen || false);
     const [visible, setvisible] = useState(false);
     const [is_card_inserted, setis_card_inserted] = useState(false);
     const [card_information, setcard_information] = useState<CardInformation | null>(null);
+
+    useEffect(()=>{
+        if(sheet_open !== defaultOpen && typeof defaultOpen === "boolean"){ setsheet_open(defaultOpen) }
+    }, [defaultOpen])
 
     // async function checkCardInserted() {
     //     try {
@@ -356,8 +382,8 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
                 name: card_info?.name
             }) 
             if(result.errorcode!==0){ throw new Error(result.message) }
-            console.log(result)
             setis_open(false)
+            setsheet_open(false);
             refetch()
         },
         onError: (e) => { 
@@ -503,7 +529,7 @@ const EidOption = ({is_open, data, setis_open, refetch, password, token}:OptionP
     return (
         <>
         
-        <Sheet onOpenChange={(o)=>{setvisible(o); if(!o){ setcard_information(null); setis_card_inserted(false); setshow_help(false) }}}>
+        <Sheet open={sheet_open} onOpenChange={(o)=>{setsheet_open(false); setvisible(o); if(!o){ setcard_information(null); setis_card_inserted(false); setshow_help(false) }}}>
             <SheetTrigger asChild>
                 <button className={`${is_open ? 'scale-100 w-20 min-w-[80px] h-20 min-h-[80px]' : 'scale-0 w-0 h-0'} disabled:opacity-50 disabled:cursor-not-allowed rounded-md bg-neutral-50 text-neutral-400 flex flex-col items-center justify-center gap-1 hover:bg-orange-50 hover:text-orange-500 hover:border hover:border-orange-500 duration-200`}>
                     <MonitorSmartphone className='w-5'/>
@@ -620,6 +646,10 @@ const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, p
     const [is_open, setis_open] = useState(false);
     const { t } = useTranslation()
 
+    const singleOption = is_open ? hasSingleSigningOption(data, ["mail2faenabled", "signatureenabled", "eidenabled"]) : false
+
+    console.log("singleOption", singleOption)
+
     return (
     <div className={`${(!data.mail2faenabled && !data.signatureenabled && !data.eidenabled) && 'hidden'} ${is_open ? 'p-2 bg-white shadow-xl gap-2' : ''} fixed bottom-10  rounded-md flex items-center z-10`}>
         <button onClick={()=>{setis_open(false)}} className={`${is_open ? 'scale-100 w-6 h-6' : 'scale-0 w-0 h-0'} bg-neutral-300 text-white flex justify-center items-center rounded-full hover:bg-neutral-400 duration-200`}>
@@ -627,21 +657,22 @@ const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, p
         </button>
         
         {data.mail2faenabled &&
-        <EmailOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token}/>
+        <EmailOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token} defaultOpen={singleOption}/>
         }
 
         <button disabled={data.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
-            {data.status !== 2 ? t('Ondertekenen')
+            {data.status !== 2 
+            ? t('Ondertekenen')
             : <><Check className='w-4' strokeWidth={2}/>{t('Ondertekend')}</>
             }
         </button>
         
         {data.signatureenabled && 
-        <DrawOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token}/>
+        <DrawOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token} defaultOpen={singleOption}/>
         }
 
         {data.eidenabled && 
-        <EidOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token}/>
+        <EidOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token} defaultOpen={singleOption}/>
         }
     </div>
     )
