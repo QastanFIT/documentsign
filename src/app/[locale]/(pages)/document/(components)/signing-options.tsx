@@ -648,8 +648,6 @@ const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, p
 
     const singleOption = is_open ? hasSingleSigningOption(data, ["mail2faenabled", "signatureenabled", "eidenabled"]) : false
 
-    console.log("singleOption", singleOption)
-
     return (
     <div className={`${(!data.mail2faenabled && !data.signatureenabled && !data.eidenabled) && 'hidden'} ${is_open ? 'p-2 bg-white shadow-xl gap-2' : ''} fixed bottom-10  rounded-md flex items-center z-10`}>
         <button onClick={()=>{setis_open(false)}} className={`${is_open ? 'scale-100 w-6 h-6' : 'scale-0 w-0 h-0'} bg-neutral-300 text-white flex justify-center items-center rounded-full hover:bg-neutral-400 duration-200`}>
@@ -660,8 +658,8 @@ const SigningOptions = ({data, password, token, refetch}:{data:DocumentObject, p
         <EmailOption is_open={is_open} data={data} password={password} setis_open={setis_open} refetch={refetch} token={token} defaultOpen={singleOption}/>
         }
 
-        <button disabled={data.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
-            {data.status !== 2 
+        <button disabled={data.oCurrentRecipient.status === 2} onClick={()=>{setis_open(true)}} className={`${!is_open ? 'h-12 px-6' : 'w-0 h-0 overflow-hidden'} bg-orange-600 active:scale-95 active:bg-orange-700 text-white rounded-full font-medium flex gap-2 items-center disabled:bg-neutral-500`}>
+            {data.oCurrentRecipient.status !== 2 
             ? t('Ondertekenen')
             : <><Check className='w-4' strokeWidth={2}/>{t('Ondertekend')}</>
             }

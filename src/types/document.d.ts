@@ -29,5 +29,6 @@ interface DocumentObject {
 }
 
 interface CurrentRecipient {
-    clientemail: string
+    clientemail:    string
+    status:         number
 }
